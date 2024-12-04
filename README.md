@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ### Start the application
 ```bash
-uvicorn app.main:app --reload --port 3001
+uvicorn main:app --reload --port 3001
 ```
 
 ## Dev
