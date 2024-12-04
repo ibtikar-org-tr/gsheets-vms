@@ -35,3 +35,10 @@ def update_sheet(sheet_id: int, updated_sheet: Sheet):
 @app.get("/sheets/", response_model=List[Sheet])
 def get_sheets():
     return sheets_db
+
+@app.get("/sheets/{sheet_id}", response_model=Sheet)
+def get_sheet(sheet_id: int):
+    for sheet in sheets_db:
+        if sheet.id == sheet_id:
+            return sheet
+    raise HTTPException(status_code=404, detail="Sheet not found")
