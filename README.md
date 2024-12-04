@@ -6,7 +6,7 @@ To run this project, follow these steps:
 
 ### Clone the repository
 ```bash
-gi clone https://github.com/ibtikar-org-tr/gsheets-vms
+git clone https://github.com/ibtikar-org-tr/gsheets-vms
 ```
 ```bash
 cd gsheets-vms
