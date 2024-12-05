@@ -54,3 +54,7 @@ def check_tasks_from_sheet(sheet_id: str):
         else:
             continue
     return "Tasks imported successfully"
+
+def check_all_sheets():
+    for sheet in db.sheet_list:
+        check_tasks_from_sheet(sheet.sheetID)
