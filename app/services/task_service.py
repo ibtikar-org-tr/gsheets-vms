@@ -1,10 +1,12 @@
 from app.db import db
 from app.models import task_model
+from app.services import gsheet_service
+import time
 
 def get_all_tasks():
     return db.task_list
 
-def create_new_task(task: task_model.task):
+def create_new_task(task: task_model.Task):
     db.task_list.append(task)
     return task
 
@@ -14,11 +16,41 @@ def get_task_by_id(task_id: int):
             return task
     return None
 
-def update_task_by_id(task_id: int, task: task_model.task):
+def update_task_by_id(task_id: int, task: task_model.Task):
     for i, s in enumerate(db.task_list):
         if s.id == task_id:
             db.task_list[i] = task
             return task
     return None
 
-
+def check_tasks_from_sheet(sheet_id: str):
+    sheet = gsheet_service.get_gsheet(sheet_id)
+    contacts = gsheet_service.get_contacts_page(sheet.worksheets())
+    for page in sheet.worksheets():
+        if page.title not in ["contacts", "imported"]:
+            page_content = page.get_all_records()
+            print(page.title)
+            # print(page_content)
+            for record in page_content:
+                contact = gsheet_service.get_specific_contact(contacts, record['owner'])
+                record_obj = task_model.Task(
+                    # id=record['id'],
+                    created_at=record['Start date'],
+                    updated_at=time.strftime("%Y-%m-%d | %H:%M:%S"),
+                    sheetID=sheet.id,
+                    ownerID=contact['number'],
+                    ownerName=record['owner'],
+                    ownerEmail=contact['mail'],
+                    ownerPhone=str(contact['phone']),
+                    points=record['points'],
+                    status=record['Status'],
+                    taskText=record['Task'],
+                    priority=record['Priority'],
+                    dueDate=record['End date'],
+                    # completedDate=record['completedDate'],
+                    notes=record['Notes']
+                )
+                create_new_task(record_obj)
+        else:
+            continue
+    return "Tasks imported successfully"
