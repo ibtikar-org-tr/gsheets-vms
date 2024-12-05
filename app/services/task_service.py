@@ -1,7 +1,7 @@
 from app.db import db
 from app.models import task_model
 from app.services import gsheet_service
-import time
+from datetime import datetime
 
 def get_all_tasks():
     return db.task_list
@@ -33,10 +33,13 @@ def check_tasks_from_sheet(sheet_id: str):
             # print(page_content)
             for record in page_content:
                 contact = gsheet_service.get_specific_contact(contacts, record['owner'])
+                created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
+                due_date = datetime.strptime(record['End date'], "%Y-%m-%d") if record['End date'] != "" else None
+
                 record_obj = task_model.Task(
                     # id=record['id'],
-                    created_at=record['Start date'],
-                    updated_at=time.strftime("%Y-%m-%d | %H:%M:%S"),
+                    created_at=created_at,
+                    updated_at=datetime.now(),
                     sheetID=sheet.id,
                     ownerID=contact['number'],
                     ownerName=record['owner'],
@@ -46,7 +49,7 @@ def check_tasks_from_sheet(sheet_id: str):
                     status=record['Status'],
                     taskText=record['Task'],
                     priority=record['Priority'],
-                    dueDate=record['End date'],
+                    dueDate=due_date,
                     # completedDate=record['completedDate'],
                     notes=record['Notes']
                 )
