@@ -21,11 +21,8 @@ def get_gsheet(sheet_id: str):
     # Connect to Google Sheets
     client = gspread.authorize(credentials)
 
-    # Use the Spreadsheet ID from the link
-    SPREADSHEET_ID = sheet_id
-
     # Open the spreadsheet using its ID
-    sheet = client.open_by_key(SPREADSHEET_ID)
+    sheet = client.open_by_key(sheet_id)
 
     return sheet
 
