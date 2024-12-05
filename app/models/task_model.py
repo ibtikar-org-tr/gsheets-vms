@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 
 class Task (BaseModel):
@@ -14,6 +15,6 @@ class Task (BaseModel):
     status: str
     taskText: str
     priority: str
-    dueDate: datetime
+    dueDate: datetime = None
     notes: str
     completedDate: str = None
