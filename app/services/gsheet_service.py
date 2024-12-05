@@ -9,7 +9,7 @@ from app.models import task_model
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets", 
           "https://www.googleapis.com/auth/drive"]
 
-def get_gsheet(sheet_id):
+def get_gsheet(sheet_id: str):
     # Path to your service account key file
     SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_API_JSON_PATH")
 
