@@ -30,14 +30,12 @@ def check_tasks_from_sheet(sheet_id: str):
         if page.title not in ["contacts", "imported"]:
             page_content = page.get_all_records()
             print(page.title)
-            # print(page_content)
             for record in page_content:
                 contact = gsheet_service.get_specific_contact(contacts, record['owner'])
                 created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
-                due_date = datetime.strptime(record['End date'], "%Y-%m-%d") if record['End date'] != "" else None
+                due_date = datetime.strptime(record['End date'], "%Y-%m-%d") if record['End date'] else None
 
                 record_obj = task_model.Task(
-                    # id=record['id'],
                     created_at=created_at,
                     updated_at=datetime.now(),
                     sheetID=sheet.id,
@@ -50,14 +48,12 @@ def check_tasks_from_sheet(sheet_id: str):
                     taskText=record['Task'],
                     priority=record['Priority'],
                     dueDate=due_date,
-                    # completedDate=record['completedDate'],
                     notes=record['Notes']
                 )
                 create_new_task(record_obj)
         else:
             continue
     return "Tasks imported successfully"
-
 def check_all_sheets():
     for sheet in db.sheet_list:
         check_tasks_from_sheet(sheet.sheetID)
