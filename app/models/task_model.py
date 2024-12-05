@@ -2,12 +2,11 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-class Task (BaseModel):
-    id: int = None
+class Task(BaseModel):
     created_at: datetime
     updated_at: datetime
-    sheetID: str # Sheet Model
-    ownerID: int
+    sheetID: str
+    ownerID: str
     ownerName: str
     ownerEmail: str
     ownerPhone: str
@@ -15,6 +14,5 @@ class Task (BaseModel):
     status: str
     taskText: str
     priority: str
-    dueDate: datetime = None
+    dueDate: Optional[datetime] = None
     notes: str
-    completedDate: str = None
