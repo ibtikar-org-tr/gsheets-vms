@@ -7,7 +7,7 @@ router = APIRouter()
 async def get_all_tasks():
     return await task_handlers.get_all_tasks()
 
-@router.post("/check_tasks")
+@router.post("/check_sheet")
 async def check_tasks_from_sheet(id: str):
     await task_handlers.check_tasks_from_sheet(id)
     return {"message": "Tasks checked successfully"}
