@@ -5,10 +5,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def get_all_tasks():
+async def get_all_tasks():
     return task_service.get_all_tasks()
 
-def check_tasks_from_sheet(sheet_id: str):
+async def check_tasks_from_sheet(sheet_id: str):
+    if not sheet_id:
+        raise HTTPException(status_code=400, detail="Sheet ID is required")
     try:
         task_service.check_tasks_from_sheet(sheet_id)
     except Exception as e:
@@ -16,7 +18,7 @@ def check_tasks_from_sheet(sheet_id: str):
         raise HTTPException(status_code=400, detail="Invalid sheet id")
     
 
-def check_all_sheets():
+async def check_all_sheets():
     try:
         task_service.check_all_sheets()
     except Exception as e:
