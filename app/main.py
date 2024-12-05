@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from app.routers import sheet_routers, task_routers
+from dotenv import load_dotenv
+load_dotenv()
+
 
 app = FastAPI()
 
