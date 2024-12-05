@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 
 class Task (BaseModel):
-    id: int
+    id: int = None
     created_at: str
     updated_at: str
-    sheetID: int # Sheet Model
+    sheetID: str # Sheet Model
     ownerID: int
-    ownerName: str 
+    ownerName: str
     ownerEmail: str
     ownerPhone: str
     points: int
@@ -14,6 +14,5 @@ class Task (BaseModel):
     taskText: str
     priority: str
     dueDate: str
-    completedDate: str
-    milestones: list[str]
     notes: str
+    completedDate: str = None
