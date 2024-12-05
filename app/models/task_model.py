@@ -1,9 +1,10 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 class Task (BaseModel):
     id: int = None
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
     sheetID: str # Sheet Model
     ownerID: int
     ownerName: str
@@ -13,6 +14,6 @@ class Task (BaseModel):
     status: str
     taskText: str
     priority: str
-    dueDate: str
+    dueDate: datetime
     notes: str
     completedDate: str = None
