@@ -26,9 +26,9 @@ async def check_all_sheets():
         logger.error(f"Error occurred in file {e.__traceback__.tb_frame.f_code.co_filename}, function {e.__traceback__.tb_frame.f_code.co_name}, line {e.__traceback__.tb_lineno}")
         raise HTTPException(status_code=400, detail="Error parsing sheet ids")
     
-async def run_task_15min_schedualer():
+async def run_task_15min_scheduler():
     try:
-        task_service.run_task_15min_schedualer()
+        task_service.run_task_15min_scheduler()
     except Exception as e:
         logger.error(f"Error running task scheduler: {e}")
         logger.error(f"Error occurred in file {e.__traceback__.tb_frame.f_code.co_filename}, function {e.__traceback__.tb_frame.f_code.co_name}, line {e.__traceback__.tb_lineno}")
