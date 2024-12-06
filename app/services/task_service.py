@@ -3,40 +3,47 @@ from app.models import task_model
 from app.services import gsheet_service
 from app.services import send_service
 from datetime import datetime
-from typing import Optional
+
+from app.db import db_connection
+from sqlmodel import select
 
 def get_all_tasks():
-    return db.task_list
+    with db_connection.get_session() as session:
+        tasks = session.exec(select(task_model.Task)).all()
+    return tasks
 
 def create_new_task(task: task_model.Task):
-    db.task_list.append(task)
+    with db_connection.get_session() as session:
+        session.add(task)
+        session.commit()
+        session.refresh(task)
     return task
 
 def get_task_by_id(task_id: int):
-    for task in db.task_list:
-        if task.id == task_id:
-            return task
-    return None
+    with db_connection.get_session() as session:
+        task = session.get(task_model.Task, task_id)
+    return task
 
 def search_task(sheetID: str, projectName: str, row_number: int):
-    for task in db.task_list:
-        if task.sheetID == sheetID and task.projectName == projectName and task.row_number == row_number:
-            return task
-    return None
+    with db_connection.get_session() as session:
+        task = session.exec(select(task_model.Task).where(task_model.Task.sheetID == sheetID, task_model.Task.projectName == projectName, task_model.Task.row_number == row_number)).first()
+    return task
 
 def update_task_by_id(task_id: int, task: task_model.Task):
-    for i, s in enumerate(db.task_list):
-        if s.id == task_id:
-            db.task_list[i] = task
-            return task
-    return None
+    with db_connection.get_session() as session:
+        existing_task = session.get(task_model.Task, task_id)
+        if existing_task:
+            for key, value in task.model_dump().items():
+                setattr(existing_task, key, value)
+            session.add(existing_task)
+            session.commit()
+            session.refresh(existing_task)
+        return existing_task
 
 def update_task_by_search(old_task: task_model.Task, new_task: task_model.Task):
     task = search_task(old_task.sheetID, old_task.projectName, old_task.row_number)
-    for i, s in enumerate(db.task_list):
-        if s.id == task.id:
-            db.task_list[i] = new_task
-            return task
+    if task:
+        return update_task_by_id(task.id, new_task)
     return None
 
 
