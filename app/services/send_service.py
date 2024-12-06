@@ -55,7 +55,7 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
     """
 
     mail_service.send_email(
-        subject=f"مهمّة جديدة: {new_task.projectName}",
+        subject=f"تحديث بخصوص المهمّة: {new_task.projectName}",
         body=text,
         to=new_task.ownerEmail
     )
@@ -70,3 +70,35 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
 
     return "Task sent successfully"
 
+def send_late_task(task: task_model.Task, manager):
+    text = f"""
+    السّلام عليكم
+    تذكير بشأن مهمذة متأخّرة !
+    
+    المهمّة: {task.taskText}
+    الاستعجاليّة: {task.priority}
+    آخر موعد للتّسليم: {task.dueDate}
+    
+    ملاحظات: {task.notes}
+
+    المشروع: {task.projectName}
+    مسؤول المشروع: {manager['name1']}
+    رقم مسؤول المشروع: https://wa.me/{manager['phone']}
+    رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{task.sheetID}/?gid={task.pageID}
+    """
+
+    mail_service.send_email(
+        subject=f"مهمّة متأخّرة: {task.projectName}",
+        body=text,
+        to=task.ownerEmail
+    )
+
+    mail_service.send_sms(
+        phone=task.ownerPhone,
+        message=text
+    )
+
+    task.last_sent = datetime.now()
+    task_service.update_task_by_search(task, task)
+
+    return "Task sent successfully"
