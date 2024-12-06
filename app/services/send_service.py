@@ -3,6 +3,7 @@ from app.models import task_model
 from app.services import mail_service, task_service
 from datetime import datetime
 
+# SEND to VOlUNTEER ------------------------------------------------
 def send_new_task(task: task_model.Task, manager):
     text = f"""
     السّلام عليكم ورحمة الله وبركاته
@@ -31,10 +32,7 @@ def send_new_task(task: task_model.Task, manager):
         message=text
     )
 
-    task.last_sent = datetime.now()
-    task_service.update_task_by_search(task, task)
-
-    return "Task sent successfully"
+    return "send_new_task sent successfully"
 
 def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Task, manager):
     text = f"""
@@ -65,10 +63,7 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
         message=text
     )
 
-    new_task.last_sent = datetime.now()
-    task_service.update_task_by_search(old_task, new_task)
-
-    return "Task sent successfully"
+    return "send_updated_dueDate_task sent successfully"
 
 def send_late_task(task: task_model.Task, manager):
     text = f"""
@@ -98,7 +93,35 @@ def send_late_task(task: task_model.Task, manager):
         message=text
     )
 
-    task.last_sent = datetime.now()
-    task_service.update_task_by_search(task, task)
+    return "send_late_task sent successfully"
 
-    return "Task sent successfully"
+# SEND to MANAGER ------------------------------------------------
+def send_to_manager_missing_data(task: task_model.Task, manager):
+    text = f"""
+    السّلام عليكم
+    تحتاج المهمّة التّالية إلى تحديثات
+    
+    المهمّة: {task.taskText}
+    الاستعجاليّة: {task.priority}
+    آخر موعد للتّسليم: {task.dueDate}
+    
+    ملاحظات: {task.notes}
+
+    المشروع: {task.projectName}
+    مسؤول المهمّة: {task.ownerName}
+    رقم مسؤول المهمّة: https://wa.me/{task.ownerPhone}
+    رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{task.sheetID}/?gid={task.pageID}
+    """
+
+    mail_service.send_email(
+        to=manager['mail'],
+        subject=f"معلومات ناقصة بخصوص المهمّة: {task.projectName}",
+        message=text
+    )
+
+    mail_service.send_sms(
+        phone=manager['phone'],
+        message=text
+    )
+
+    return "send_to_manager_missing_data sent successfully"
