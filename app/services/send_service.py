@@ -17,6 +17,7 @@ def send_new_task(task: task_model.Task, manager):
     المشروع: {task.projectName}
     مسؤول المشروع: {manager['name1']}
     رقم مسؤول المشروع: https://wa.me/{manager['phone']}
+    رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{task.sheetID}/?gid={task.pageID}
     """
 
     mail_service.send_email(
@@ -43,13 +44,14 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
     المهمّة: {new_task.taskText}
     الاستعجاليّة: {new_task.priority}
     آخر موعد للتّسليم: {new_task.dueDate}
-    كان سابقاً آخؤر موعد للتّسليم: {old_task.dueDate}
+    كان سابقاً آخر موعد للتّسليم: {old_task.dueDate}
     
     ملاحظات: {new_task.notes}
 
     المشروع: {new_task.projectName}
     مسؤول المشروع: {manager['name1']}
     رقم مسؤول المشروع: https://wa.me/{manager['phone']}
+    رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{new_task.sheetID}/?gid={new_task.pageID}
     """
 
     mail_service.send_email(
@@ -67,5 +69,4 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
     task_service.update_task_by_search(old_task, new_task)
 
     return "Task sent successfully"
-
 
