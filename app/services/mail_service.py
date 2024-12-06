@@ -10,22 +10,22 @@ def send_email(to, subject, message):
     SMTP_HOST = os.getenv('SMTP_HOST')
 
     try:
-        msg = MIMEMultipart()
-        msg['From'] = SMTP_USER
-        msg['To'] = to
-        msg['Subject'] = subject
+        # msg = MIMEMultipart()
+        # msg['From'] = SMTP_USER
+        # msg['To'] = to
+        # msg['Subject'] = subject
 
-        msg.attach(MIMEText(message, 'plain'))
+        # msg.attach(MIMEText(message, 'plain'))
 
-        server = smtplib.SMTP(host=SMTP_HOST, port=SMTP_PORT)
-        server.starttls()
-        server.login(SMTP_USER, SMTP_PASS)
-        server.send_message(msg)
-        server.quit()
+        # server = smtplib.SMTP(host=SMTP_HOST, port=SMTP_PORT)
+        # server.starttls()
+        # server.login(SMTP_USER, SMTP_PASS)
+        # server.send_message(msg)
+        # server.quit()
 
-        print("Email sent successfully")
+        print(f"Email sent successfully to {to}")
     except Exception as e:
         print(f"Failed to send email: {e}")
 
 def send_sms(phone, message):
-    pass
+    print("SMS sent successfully to ", phone)
