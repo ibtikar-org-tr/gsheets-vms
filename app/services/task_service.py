@@ -2,9 +2,10 @@ from app.models import task_model
 from app.services import gsheet_service, sheet_service
 from app.services import send_service
 from datetime import datetime, timedelta
-
+import time
 from app.db import db_connection
 from sqlmodel import select
+
 
 def get_all_tasks():
     with db_connection.get_session() as session:
@@ -153,3 +154,10 @@ def check_all_sheets():
     for sheet in sheets:
         print("point4: task_service.check_all_sheets, iterate over sheets")
         check_tasks_from_sheet(sheet.sheetID)
+
+def run_task_15min_schedualer():
+    while True:
+        print("Running run_task_15min_schedualer...")
+        check_all_sheets()
+        print("Completed run_task_15min_schedualer. Sleeping for 15 minutes...")
+        time.sleep(15 * 60)  # Sleep for 15 minutes (15 * 60 seconds)
