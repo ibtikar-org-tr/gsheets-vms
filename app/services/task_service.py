@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import time
 from app.db import db_connection
 from sqlmodel import select
+import pytz
 
 
 def get_all_tasks():
@@ -114,7 +115,9 @@ def check_tasks_from_sheet(sheet_id: str):
                 # check if the task has missing data
                 if not task_obj.ownerName or not task_obj.points or not task_obj.taskText or not task_obj.priority or not task_obj.dueDate:
                     sent = True
-                    if not existing_task.last_reported:
+                    if not existing_task:
+                          if not sent: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()  
+                    elif not existing_task.last_reported:
                         if not sent: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()
                     elif existing_task.last_reported and existing_task.last_reported < datetime.now() - timedelta(days=1):
                         if not sent: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()
@@ -155,9 +158,14 @@ def check_all_sheets():
         print("point4: task_service.check_all_sheets, iterate over sheets")
         check_tasks_from_sheet(sheet.sheetID)
 
-def run_task_15min_schedualer():
+def run_task_15min_scheduler():
+    istanbul_tz = pytz.timezone('Europe/Istanbul')
     while True:
-        print("Running run_task_15min_schedualer...")
-        check_all_sheets()
-        print("Completed run_task_15min_schedualer. Sleeping for 15 minutes...")
+        now = datetime.now(istanbul_tz)
+        if now.hour >= 8 and now.hour < 22:
+            print("Running run_task_15min_scheduler...")
+            check_all_sheets()
+            print("Completed run_task_15min_scheduler. Sleeping for 15 minutes...")
+        else:
+            print("Outside of working hours. Sleeping for 15 minutes...")
         time.sleep(15 * 60)  # Sleep for 15 minutes (15 * 60 seconds)
