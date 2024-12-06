@@ -1,22 +1,34 @@
 from app.db import db
 from app.models import sheet_model
 
+from app.db import db_connection
+from sqlmodel import select
+
 def get_all_sheets():
-    return db.sheet_list
+    with db_connection.get_session() as session:
+        sheets = session.exec(select(sheet_model.Sheet)).all()
+    return sheets
 
 def create_new_sheet(sheet: sheet_model.Sheet):
-    db.sheet_list.append(sheet)
+    with db_connection.get_session() as session:
+        session.add(sheet)
+        session.commit()
+        session.refresh(sheet)
     return sheet
 
 def get_sheet_by_id(sheet_id: int):
-    for sheet in db.sheet_list:
-        if sheet.id == sheet_id:
-            return sheet
-    return None
+    with db_connection.get_session() as session:
+        sheet = session.get(sheet_model.Sheet, sheet_id)
+    return sheet
+
 
 def update_sheet_by_id(sheet_id: int, sheet: sheet_model.Sheet):
-    for i, s in enumerate(db.sheet_list):
-        if s.id == sheet_id:
-            db.sheet_list[i] = sheet
-            return sheet
-    return None
+    with db_connection.get_session() as session:
+        existing_sheet = session.get(sheet_model.Sheet, sheet_id)
+        if existing_sheet:
+            for key, value in sheet.model_dump().items():
+                setattr(existing_sheet, key, value)
+            session.add(existing_sheet)
+            session.commit()
+            session.refresh(existing_sheet)
+        return existing_sheet
