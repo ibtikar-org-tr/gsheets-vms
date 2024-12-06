@@ -55,6 +55,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 contact = gsheet_service.get_specific_contact(contacts, record['owner'])
                 created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
                 due_date = datetime.strptime(record['End date'], "%Y-%m-%d") if record['End date'] else None
+                sent = False
 
                 # create a new task object
                 task_obj = task_model.Task(
@@ -76,11 +77,16 @@ def check_tasks_from_sheet(sheet_id: str):
                     notes=record['Notes']
                 )
 
+                # check if the task is completed
+                if task_obj.status == "Completed":
+                    task_obj.completed_at = datetime.now()
+                    sent = True
+
                 # make some checks before creating the task
                 existing_task = search_task(sheet.id, page.title, row_number)
                 if existing_task:
-                    sent = False
-                    # if existing_task.updated_at < datetime.now() - 1:
+                    
+                    # if existing_task.last_sent < datetime.now() - 1:
                     #     send_service.send_updated_task(existing_task, task_obj, contacts[0])
                     #     sent = True
                     #     update_task_by_id(existing_task.id, task_obj)
@@ -95,8 +101,9 @@ def check_tasks_from_sheet(sheet_id: str):
                     if existing_task.status != task_obj.status or existing_task.points != task_obj.points or existing_task.taskText != task_obj.taskText or existing_task.priority != task_obj.priority or existing_task.notes != task_obj.notes:
                         update_task_by_id(existing_task.id, task_obj)
                 else:
+                    if not sent: send_service.send_new_task(task_obj, contacts[0])
+                    sent = True
                     create_new_task(task_obj)
-                    send_service.send_new_task(task_obj, contacts[0])
                 row_number += 1
         else:
             continue
