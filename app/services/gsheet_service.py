@@ -28,7 +28,7 @@ def get_gsheet(sheet_id: str):
 
 def get_contacts_page(sheet):
     for page in sheet:
-        if page.title == "contacts":
+        if page.title.lower() == "contacts":
             contacts_page = page.get_all_records()
             # contacts_page_id = page.id
         else:
