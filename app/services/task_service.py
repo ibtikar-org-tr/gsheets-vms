@@ -34,7 +34,7 @@ def update_task_by_search(old_task: task_model.Task, new_task: task_model.Task):
     task = search_task(old_task.sheetID, old_task.projectName, old_task.row_number)
     for i, s in enumerate(db.task_list):
         if s.id == task.id:
-            db.task_list[i] = task
+            db.task_list[i] = new_task
             return task
     return None
 
