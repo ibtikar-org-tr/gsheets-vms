@@ -8,6 +8,7 @@ class Task(SQLModel, table=True):
     created_at: datetime
     updated_at: datetime
     last_sent: Optional[datetime] = None
+    last_reported: Optional[datetime] = None
     sheetID: str
     projectName: str
     pageID: int
