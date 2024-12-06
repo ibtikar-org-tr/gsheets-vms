@@ -170,6 +170,7 @@ notes.txt
 
 
 # Alembic
+alembic/versions/
 alembic/versions/*.pyc
 alembic/versions/*.pyo
 alembic/versions/*.pyd
