@@ -5,14 +5,19 @@ from datetime import datetime
 class Task(BaseModel):
     created_at: datetime
     updated_at: datetime
+    last_sent: Optional[datetime] = None
     sheetID: str
+    projectName: str
+    row_number: int
     ownerID: str
     ownerName: str
     ownerEmail: str
     ownerPhone: str
+    managerName: str
     points: int
     status: str
     taskText: str
     priority: str
     dueDate: Optional[datetime] = None
-    notes: str
+    notes: str = None
+    milestones: Optional[list[str]] = None
