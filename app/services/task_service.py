@@ -89,11 +89,13 @@ def check_tasks_from_sheet(sheet_id: str):
                 # make some checks before creating the task
                 existing_task = search_task(sheet.id, page.title, row_number)
                 if existing_task:
-                    
+                    # # check if the task is late or needs reminders
                     # if existing_task.last_sent < datetime.now() - 1:
                     #     send_service.send_updated_task(existing_task, task_obj, contacts[0])
                     #     sent = True
                     #     update_task_by_id(existing_task.id, task_obj)
+
+                    # check if the task is updated
                     if existing_task.ownerID != task_obj.ownerID:
                         if not sent: send_service.send_new_task(task_obj, contacts[0])
                         sent = True
@@ -104,6 +106,7 @@ def check_tasks_from_sheet(sheet_id: str):
                         update_task_by_id(existing_task.id, task_obj)
                     if existing_task.status != task_obj.status or existing_task.points != task_obj.points or existing_task.taskText != task_obj.taskText or existing_task.priority != task_obj.priority or existing_task.notes != task_obj.notes:
                         update_task_by_id(existing_task.id, task_obj)
+                # create the task if it doesn't exist
                 else:
                     if not sent: send_service.send_new_task(task_obj, contacts[0])
                     sent = True
@@ -111,7 +114,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 row_number += 1
         else:
             continue
-    return "Tasks imported successfully"
+    return "Tasks imported and sent successfully"
 
 def check_all_sheets():
     for sheet in db.sheet_list:
