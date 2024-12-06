@@ -1,4 +1,3 @@
-from app.db import db
 from app.models import sheet_model
 
 from app.db import db_connection

@@ -1,4 +1,3 @@
-from app.db import db
 from app.models import task_model
 from app.services import mail_service, task_service
 from datetime import datetime
