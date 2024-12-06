@@ -1,7 +1,7 @@
 from app.models import task_model
 from app.services import gsheet_service, sheet_service
 from app.services import send_service
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from app.db import db_connection
 from sqlmodel import select
@@ -18,7 +18,7 @@ def create_new_task(task: task_model.Task):
         session.refresh(task)
     return task
 
-def get_task_by_id(task_id: int):
+def get_task_by_id(task_id: str):
     with db_connection.get_session() as session:
         task = session.get(task_model.Task, task_id)
     return task
@@ -28,7 +28,7 @@ def search_task(sheetID: str, projectName: str, row_number: int):
         task = session.exec(select(task_model.Task).where(task_model.Task.sheetID == sheetID, task_model.Task.projectName == projectName, task_model.Task.row_number == row_number)).first()
     return task
 
-def update_task_by_id(task_id: int, task: task_model.Task):
+def update_task_by_id(task_id: str, task: task_model.Task):
     with db_connection.get_session() as session:
         existing_task = session.get(task_model.Task, task_id)
         if existing_task:
@@ -47,6 +47,7 @@ def update_task_by_search(old_task: task_model.Task, new_task: task_model.Task):
 
 
 def check_tasks_from_sheet(sheet_id: str):
+    print("point5: task_service.check_tasks_from_sheet, start")
     # get the sheet
     sheet = gsheet_service.get_gsheet(sheet_id)
     if sheet is None:
@@ -56,17 +57,19 @@ def check_tasks_from_sheet(sheet_id: str):
     contacts = gsheet_service.get_contacts_page(sheet.worksheets())
     if contacts is None:
         raise ValueError(f"Error parsing sheet id {sheet_id}: Contacts not found")
-
+    print("point9: task_service.check_tasks_from_sheet, contacts found")
     # iterate over the pages
     for page in sheet.worksheets():
+        print("point10: task_service.check_tasks_from_sheet, iterate over pages")
         # skipping the contacts and imported pages
         if page.title.lower() not in ["contacts", "imported"]:
             # get all records from the page
             page_content = page.get_all_records()
-            print(page.title)
+            print("point11: task_service.check_tasks_from_sheet - found page with title:", page.title)
             row_number = 1
             # iterate over the records
             for record in page_content:
+                print("point12: task_service.check_tasks_from_sheet, iterate over records, row:", row_number)
                 # prepare the task object
                 contact = gsheet_service.get_specific_contact(contacts, record['owner'])
                 created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
@@ -94,6 +97,7 @@ def check_tasks_from_sheet(sheet_id: str):
                     dueDate=due_date,
                     notes=record['Notes']
                 )
+                print("point13: task_service.check_tasks_from_sheet, task object created")
 
                 # check if the task is completed or blocked
                 if task_obj.status.lower() == "completed":
@@ -113,12 +117,12 @@ def check_tasks_from_sheet(sheet_id: str):
                 existing_task = search_task(sheet.id, page.title, row_number)
                 if existing_task:
                     # check if the task is late or needs reminders
-                    if existing_task.last_sent:
-                        if existing_task.last_sent > datetime.now() - 1:
+                    if existing_task.last_sent and task_obj.dueDate:
+                        if existing_task.last_sent > datetime.now() - timedelta(days=1):
                             sent = True
-                        if task_obj.dueDate and task_obj.dueDate < datetime.now() and task_obj.last_sent < datetime.now() - 1:
+                        if task_obj.dueDate and task_obj.dueDate < datetime.now() and existing_task.last_sent < datetime.now() - timedelta(days=1):
                             if not sent: send_service.send_late_task(task_obj, manager); task_obj.last_sent = datetime.now(); sent = True
-                        elif task_obj.dueDate and task_obj.dueDate > datetime.now() and task_obj.last_sent < datetime.now() - 1:
+                        elif task_obj.dueDate and task_obj.dueDate > datetime.now() and existing_task.last_sent < datetime.now() - timedelta(days=1):
                             if not sent: send_service.send_updated_task(task_obj, manager); task_obj.last_sent = datetime.now(); sent = True
                     # check if the task is updated, and update it
                     if existing_task.ownerID != task_obj.ownerID:
@@ -133,12 +137,16 @@ def check_tasks_from_sheet(sheet_id: str):
                 else:
                     if not sent: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); sent = True
                     create_new_task(task_obj)
+
+                print("point14: task_service.check_tasks_from_sheet, task processed at row:", row_number)
                 row_number += 1
         else:
             continue
     return "Tasks imported and sent successfully"
 
 def check_all_sheets():
+    print("point2: task_service.check_all_sheets, start")
     sheets = sheet_service.get_all_sheets()
     for sheet in sheets:
+        print("point4: task_service.check_all_sheets, iterate over sheets")
         check_tasks_from_sheet(sheet.sheetID)
