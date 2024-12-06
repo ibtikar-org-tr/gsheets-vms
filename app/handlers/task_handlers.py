@@ -19,7 +19,11 @@ async def check_tasks_from_sheet(sheet_id: str):
 
 async def check_all_sheets():
     try:
-        task_service.check_all_sheets()
+        print("point1: task_handlers.check_all_sheets")
+        sheets = task_service.check_all_sheets()
+        if not sheets:
+            logger.warning("No sheets found")
+            raise HTTPException(status_code=404, detail="No sheets found")
     except Exception as e:
         logger.error(f"Error parsing sheet ids: {e}")
         logger.error(f"Error occurred in file {e.__traceback__.tb_frame.f_code.co_filename}, function {e.__traceback__.tb_frame.f_code.co_name}, line {e.__traceback__.tb_lineno}")
