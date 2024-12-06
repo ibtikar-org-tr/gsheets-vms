@@ -25,4 +25,4 @@ class Task(SQLModel, table=True):
     completed_at: Optional[datetime] = None
     blocked_at: Optional[datetime] = None
     notes: str = None
-    milestone: str
+    milestone: str = Field(default="")
