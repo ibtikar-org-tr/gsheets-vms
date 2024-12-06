@@ -19,5 +19,6 @@ class Task(BaseModel):
     taskText: str
     priority: str
     dueDate: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
     notes: str = None
     milestones: Optional[list[str]] = None
