@@ -10,20 +10,28 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
           "https://www.googleapis.com/auth/drive"]
 
 def get_gsheet(sheet_id: str):
+    print("point6: gsheet_service.get_gsheet, start")
+
     # Path to your service account key file
     SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_API_JSON_PATH")
+    print("point7: gsheet_service.get_gsheet, GOOGLE_API_JSON_PATH")
 
     # Authenticate with the service account
-    credentials = Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES
-    )
+    try:
+        credentials = Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE, scopes=SCOPES
+        )
+    except Exception as e:
+        print(f"Authentication failed (gsheet): {e}")
+        return None
 
     # Connect to Google Sheets
     client = gspread.authorize(credentials)
 
     # Open the spreadsheet using its ID
     sheet = client.open_by_key(sheet_id)
-
+    
+    print("point8: gsheet_service.get_gsheet, end")
     return sheet
 
 def get_contacts_page(sheet):
