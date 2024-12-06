@@ -1,9 +1,10 @@
-from pydantic import BaseModel, Field
+from sqlmodel import SQLModel, Field
+from typing import Optional
 from datetime import datetime
+import uuid
 
-class Sheet(BaseModel):
-    id: int = None
+class Sheet(SQLModel, table=True):
+    id: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
     sheetID: str
-    modified_at: datetime
-    modified_at: datetime
+    created_at: datetime = datetime.now()
 
