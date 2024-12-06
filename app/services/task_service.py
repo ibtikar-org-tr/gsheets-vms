@@ -1,6 +1,6 @@
 from app.db import db
 from app.models import task_model
-from app.services import gsheet_service
+from app.services import gsheet_service, sheet_service
 from app.services import send_service
 from datetime import datetime
 
@@ -140,5 +140,6 @@ def check_tasks_from_sheet(sheet_id: str):
     return "Tasks imported and sent successfully"
 
 def check_all_sheets():
-    for sheet in db.sheet_list:
+    sheets = sheet_service.get_all_sheets()
+    for sheet in sheets:
         check_tasks_from_sheet(sheet.sheetID)
