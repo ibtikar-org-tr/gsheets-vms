@@ -44,7 +44,7 @@ def check_tasks_from_sheet(sheet_id: str):
     contacts = gsheet_service.get_contacts_page(sheet.worksheets())
     for page in sheet.worksheets():
         # skipping the contacts and imported pages
-        if page.title not in ["contacts", "imported"]:
+        if page.title.lower() not in ["contacts", "imported"]:
             # get all records from the page
             page_content = page.get_all_records()
             print(page.title)
@@ -63,6 +63,7 @@ def check_tasks_from_sheet(sheet_id: str):
                     updated_at=datetime.now(),
                     sheetID=sheet.id,
                     projectName=page.title,
+                    pageID=page.id,
                     row_number=row_number,
                     ownerID=str(contact['number']),
                     ownerName=record['owner'],
@@ -77,9 +78,12 @@ def check_tasks_from_sheet(sheet_id: str):
                     notes=record['Notes']
                 )
 
-                # check if the task is completed
-                if task_obj.status == "Completed":
+                # check if the task is completed or blocked
+                if task_obj.status.lower() == "completed":
                     task_obj.completed_at = datetime.now()
+                    sent = True
+                elif task_obj.status.lower() == "rejected":
+                    task_obj.blocked_at = datetime.now()
                     sent = True
 
                 # make some checks before creating the task
