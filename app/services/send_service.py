@@ -21,9 +21,9 @@ def send_new_task(task: task_model.Task, manager):
     """
 
     mail_service.send_email(
+        to=task.ownerEmail,
         subject=f"مهمّة جديدة: {task.projectName}",
-        body=text,
-        to=task.ownerEmail
+        message=text,
     )
 
     mail_service.send_sms(
@@ -55,9 +55,9 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
     """
 
     mail_service.send_email(
+        to=new_task.ownerEmail,
         subject=f"تحديث بخصوص المهمّة: {new_task.projectName}",
-        body=text,
-        to=new_task.ownerEmail
+        message=text
     )
 
     mail_service.send_sms(
@@ -73,11 +73,11 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
 def send_late_task(task: task_model.Task, manager):
     text = f"""
     السّلام عليكم
-    تذكير بشأن مهمذة متأخّرة !
+    تذكير بشأن مهمّة متأخّرة !
     
     المهمّة: {task.taskText}
     الاستعجاليّة: {task.priority}
-    آخر موعد للتّسليم: {task.dueDate}
+    آخر موعد للتّسليم كان: {task.dueDate}
     
     ملاحظات: {task.notes}
 
