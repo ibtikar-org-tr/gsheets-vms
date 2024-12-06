@@ -167,3 +167,14 @@ cython_debug/
 
 # dev
 notes.txt
+
+
+# Alembic
+alembic/versions/*.pyc
+alembic/versions/*.pyo
+alembic/versions/*.pyd
+alembic/versions/__pycache__/
+alembic/versions/*.py[cod]
+alembic/versions/*$py.class
+
+alembic.ini
