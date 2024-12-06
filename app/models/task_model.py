@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 from datetime import datetime
-import uuid
+
 
 
 class Task(SQLModel, table=True):
@@ -26,4 +26,4 @@ class Task(SQLModel, table=True):
     completed_at: Optional[datetime] = None
     blocked_at: Optional[datetime] = None
     notes: str = None
-    milestones: Optional[list[str]] = None
+    milestone: str
