@@ -5,6 +5,23 @@ PIP = $(VENV_DIR)/Scripts/pip
 UVICORN = $(VENV_DIR)/Scripts/uvicorn
 ALEMBIC = $(VENV_DIR)/Scripts/alembic
 
+# Detect the operating system
+ifeq ($(OS),Windows_NT)
+    PYTHON = $(VENV_DIR)\Scripts\python.exe
+    PIP = $(VENV_DIR)\Scripts\pip.exe
+    UVICORN = $(VENV_DIR)\Scripts\uvicorn.exe
+    ALEMBIC = $(VENV_DIR)\Scripts\alembic.exe
+    RM = del /Q
+    RMDIR = rmdir /S /Q
+else
+    PYTHON = $(VENV_DIR)/bin/python
+    PIP = $(VENV_DIR)/bin/pip
+    UVICORN = $(VENV_DIR)/bin/uvicorn
+    ALEMBIC = $(VENV_DIR)/bin/alembic
+    RM = rm -f
+    RMDIR = rm -rf
+endif
+
 # Default target
 .PHONY: help
 help:
@@ -38,7 +55,7 @@ run:
 .PHONY: clean
 clean:
     @echo "Cleaning up the project..."
-    rm -rf $(VENV_DIR)
-    find . -type d -name "__pycache__" -exec rm -rf {} +
-    find . -type d -name "*.egg-info" -exec rm -rf {} +
-    find . -type d -name "*.pytest_cache" -exec rm -rf {} +
+    $(RMDIR) $(VENV_DIR)
+    find . -type d -name "__pycache__" -exec $(RMDIR) {} +
+    find . -type d -name "*.egg-info" -exec $(RMDIR) {} +
+    find . -type d -name "*.pytest_cache" -exec $(RMDIR) {} +
