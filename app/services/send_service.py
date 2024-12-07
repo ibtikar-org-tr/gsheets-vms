@@ -8,15 +8,16 @@ def send_new_task(task: task_model.Task, manager):
     السّلام عليكم ورحمة الله وبركاته
     تمّ تعيين مهمّة جديدة لكم
 
-    المهمّة: {task.taskText}
+    المهمّة: *{task.taskText}*
     الاستعجاليّة: {task.priority}
-    آخر موعد للتّسليم: {task.dueDate}
+    آخر موعد للتّسليم: *{task.dueDate.strftime("%Y-%m-%d") if task.dueDate else "N/A"}*
 
     ملاحظات: {task.notes}
 
     المشروع: {task.projectName}
     مسؤول المشروع: {manager['name1']}
-    رقم مسؤول المشروع: https://wa.me/{manager['phone']}
+    رقم مسؤول المشروع: wa.me/{manager['phone']}
+
     رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{task.sheetID}/?gid={task.pageID}
     """
 
@@ -38,16 +39,17 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
     السّلام عليكم
     تمّ تحديث تاريخ تسليم المهمّة التّالية ...
     
-    المهمّة: {new_task.taskText}
+    المهمّة: *{new_task.taskText}*
     الاستعجاليّة: {new_task.priority}
-    آخر موعد للتّسليم: {new_task.dueDate}
-    كان سابقاً آخر موعد للتّسليم: {old_task.dueDate}
+    آخر موعد للتّسليم: *{new_task.dueDate.strftime("%Y-%m-%d") if new_task.dueDate else "N/A"}*
+    كان سابقاً آخر موعد للتّسليم: {old_task.dueDate.strftime("%Y-%m-%d") if old_task.dueDate else "N/A"}
     
     ملاحظات: {new_task.notes}
 
     المشروع: {new_task.projectName}
     مسؤول المشروع: {manager['name1']}
-    رقم مسؤول المشروع: https://wa.me/{manager['phone']}
+    رقم مسؤول المشروع: wa.me/{manager['phone']}
+
     رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{new_task.sheetID}/?gid={new_task.pageID}
     """
 
@@ -69,15 +71,16 @@ def send_late_task(task: task_model.Task, manager):
     السّلام عليكم
     تذكير بشأن مهمّة متأخّرة !
     
-    المهمّة: {task.taskText}
+    المهمّة: *{task.taskText}*
     الاستعجاليّة: {task.priority}
-    آخر موعد للتّسليم كان: {task.dueDate}
+    آخر موعد للتّسليم كان: *{task.dueDate.strftime("%Y-%m-%d") if task.dueDate else "N/A"}*
     
     ملاحظات: {task.notes}
 
     المشروع: {task.projectName}
     مسؤول المشروع: {manager['name1']}
-    رقم مسؤول المشروع: https://wa.me/{manager['phone']}
+    رقم مسؤول المشروع: wa.me/{manager['phone']}
+
     رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{task.sheetID}/?gid={task.pageID}
     """
 
@@ -100,15 +103,16 @@ def send_to_manager_missing_data(task: task_model.Task, manager):
     السّلام عليكم
     تحتاج المهمّة التّالية إلى تحديثات
     
-    المهمّة: {task.taskText}
+    المهمّة: *{task.taskText}*
     الاستعجاليّة: {task.priority}
-    آخر موعد للتّسليم: {task.dueDate}
+    آخر موعد للتّسليم: *{task.dueDate.strftime("%Y-%m-%d") if task.dueDate else "N/A"}*
     
     ملاحظات: {task.notes}
 
     المشروع: {task.projectName}
     مسؤول المهمّة: {task.ownerName}
-    رقم مسؤول المهمّة: https://wa.me/{task.ownerPhone}
+    رقم مسؤول المهمّة: wa.me/{task.ownerPhone}
+
     رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{task.sheetID}/?gid={task.pageID}
     """
 
