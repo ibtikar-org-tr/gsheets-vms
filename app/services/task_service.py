@@ -77,7 +77,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
                 due_date = datetime.strptime(record['End date'], "%Y-%m-%d") if record['End date'] else None
                 manager = contacts[0]
-                sent = False
+                send = True
 
                 # create a new task object
                 task_obj = task_model.Task(
@@ -104,45 +104,45 @@ def check_tasks_from_sheet(sheet_id: str):
                 # check if the task is completed or blocked
                 if task_obj.status.lower() == "completed":
                     task_obj.completed_at = datetime.now()
-                    sent = True
+                    send = False
                 elif task_obj.status.lower() == "rejected":
                     task_obj.blocked_at = datetime.now()
-                    sent = True
+                    send = False
                 
                 # check if the task exists already
                 existing_task = search_task(sheet.id, page.title, row_number)
 
                 # check if the task has missing data
                 if not task_obj.ownerName or not task_obj.points or not task_obj.taskText or not task_obj.priority or not task_obj.dueDate:
-                    sent = True
                     if not existing_task:
-                          if not sent: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()  
+                          if send: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()  
                     elif not existing_task.last_reported:
-                        if not sent: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()
+                        if send: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()
                     elif existing_task.last_reported and existing_task.last_reported < datetime.now() - timedelta(days=1):
-                        if not sent: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()
+                        if send: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()
+                    send = False
 
                 if existing_task:
                     # check if the task is late or needs reminders
                     if existing_task.last_sent and task_obj.dueDate:
                         if existing_task.last_sent > datetime.now() - timedelta(days=1):
-                            sent = True
+                            send = False
                         if task_obj.dueDate and task_obj.dueDate < datetime.now() and existing_task.last_sent < datetime.now() - timedelta(days=1):
-                            if not sent: send_service.send_late_task(task_obj, manager); task_obj.last_sent = datetime.now(); sent = True
+                            if send: send_service.send_late_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                         elif task_obj.dueDate and task_obj.dueDate > datetime.now() and existing_task.last_sent < datetime.now() - timedelta(days=1):
-                            if not sent: send_service.send_updated_task(task_obj, manager); task_obj.last_sent = datetime.now(); sent = True
+                            if send: send_service.send_updated_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                     # check if the task is updated, and update it
                     if existing_task.ownerID != task_obj.ownerID:
-                        if not sent: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); sent = True
+                        if send: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                         update_task_by_id(existing_task.id, task_obj)
                     elif existing_task.dueDate != task_obj.dueDate:
-                        if not sent: send_service.send_updated_dueDate_task(existing_task, task_obj, manager); task_obj.last_sent = datetime.now(); sent = True
+                        if send: send_service.send_updated_dueDate_task(existing_task, task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                         update_task_by_id(existing_task.id, task_obj)
                     if existing_task.status != task_obj.status or existing_task.points != task_obj.points or existing_task.taskText != task_obj.taskText or existing_task.priority != task_obj.priority or existing_task.notes != task_obj.notes:
                         update_task_by_id(existing_task.id, task_obj)
                 # create the task if it doesn't exist
                 else:
-                    if not sent: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); sent = True
+                    if send: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                     create_new_task(task_obj)
 
                 print("point14: task_service.check_tasks_from_sheet, task processed at row:", row_number)
