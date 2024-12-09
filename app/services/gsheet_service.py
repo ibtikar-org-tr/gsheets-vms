@@ -34,6 +34,10 @@ def get_gsheet(sheet_id: str):
     print("point8: gsheet_service.get_gsheet, end")
     return sheet
 
+def get_sheet_title(sheet_id: str):
+    sheet = get_gsheet(sheet_id)
+    return sheet.title
+
 def get_contacts_page(sheet):
     for page in sheet:
         if page.title.lower() == "contacts":

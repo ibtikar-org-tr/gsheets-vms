@@ -1,5 +1,5 @@
 from app.models import sheet_model
-
+from app.services import gsheet_service
 from app.db import db_connection
 from sqlmodel import select
 
@@ -10,7 +10,8 @@ def get_all_sheets():
     return sheets
 
 def create_new_sheet(sheetID: str):
-    sheet = sheet_model.Sheet(sheetID=sheetID)
+    sheetName = gsheet_service.get_sheet_title(sheetID)
+    sheet = sheet_model.Sheet(sheetID=sheetID, sheetName=sheetName)
     with db_connection.get_session() as session:
         session.add(sheet)
         session.commit()
