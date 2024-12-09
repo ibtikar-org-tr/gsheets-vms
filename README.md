@@ -31,6 +31,15 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### Migrate db
+```bash
+alembic revision --autogenerate -m "Initial migration"
+```
+add "import sqlmodel" to the head of alembic/versions/*_initial_migration.py
+```bash
+alembic upgrade head
+```
+
 ### Start the application
 ```bash
 uvicorn main:app --reload --port 3001
