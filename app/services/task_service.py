@@ -75,7 +75,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 # prepare the task object
                 contact = gsheet_service.get_specific_contact(contacts, record['owner'])
                 created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
-                due_date = datetime.strptime(record['End date'], "%Y-%m-%d") if record['End date'] else None
+                due_date = datetime.strptime(record['Delivery date'], "%Y-%m-%d") if record['End date'] else None
                 manager = contacts[0]
                 send = True
 
