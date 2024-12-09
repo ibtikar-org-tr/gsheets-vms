@@ -30,7 +30,7 @@ def send_email(to, subject, message):
 
 def send_sms(phone, message):
     try:
-        response = requests.post(f"http://127.0.0.1:3020/send?phone={phone}&message={message}")
+        response = requests.post(f"{os.getenv('SMS_MS')}?phone={phone}&message={message}")
         response.raise_for_status()
         print("SMS sent successfully to ", phone)
     except requests.exceptions.RequestException as e:
