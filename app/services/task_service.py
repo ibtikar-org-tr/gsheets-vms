@@ -68,7 +68,10 @@ def check_tasks_from_sheet(sheet_id: str):
             # get all records from the page
             page_content = page.get_all_records()
             print("point11: task_service.check_tasks_from_sheet - found page with title:", page.title)
+            # set the start row number to 1
             row_number = 1
+            # get the first contact as the manager
+            manager = gsheet_service.get_specific_contact(contacts, page_content[0]['owner'])
             # iterate over the records
             for record in page_content:
                 print("point12: task_service.check_tasks_from_sheet, iterate over records, row:", row_number)
@@ -76,7 +79,6 @@ def check_tasks_from_sheet(sheet_id: str):
                 contact = gsheet_service.get_specific_contact(contacts, record['owner'])
                 created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
                 due_date = datetime.strptime(record['Delivery date'], "%Y-%m-%d") if record['End date'] else None
-                manager = contacts[0]
                 send = True
 
                 # create a new task object
