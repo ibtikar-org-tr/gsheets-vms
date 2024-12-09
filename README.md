@@ -42,7 +42,7 @@ alembic upgrade head
 
 ### Start the application
 ```bash
-uvicorn main:app --reload --port 3001
+uvicorn app.main:app --reload --port 3001
 ```
 
 ## Dev
