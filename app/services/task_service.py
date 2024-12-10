@@ -76,10 +76,12 @@ def check_tasks_from_sheet(sheet_id: str):
             for record in page_content:
                 print("point12: task_service.check_tasks_from_sheet, iterate over records, row:", row_number)
                 # prepare the task object
-                contact = gsheet_service.get_specific_contact(contacts, record['owner'])
+                try: contact = gsheet_service.get_specific_contact(contacts, record['owner'])
+                except: contact = {'number': '0', 'name1': 'Unknown', 'mail': 'Unknown', 'phone': 'Unknown'}
                 created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
                 due_date = datetime.strptime(record['Delivery date'], "%Y-%m-%d") if record['Delivery date'] else None
                 send = True
+                print("point13: task_service.check_tasks_from_sheet, task object preprepared")
 
                 # create a new task object
                 task_obj = task_model.Task(
@@ -101,7 +103,7 @@ def check_tasks_from_sheet(sheet_id: str):
                     dueDate=due_date,
                     notes=record['Notes']
                 )
-                print("point13: task_service.check_tasks_from_sheet, task object created")
+                print("point14: task_service.check_tasks_from_sheet, task object created")
 
                 # check if the task is completed or blocked
                 if task_obj.status.lower() == "completed":
@@ -147,7 +149,7 @@ def check_tasks_from_sheet(sheet_id: str):
                     if send: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                     create_new_task(task_obj)
 
-                print("point14: task_service.check_tasks_from_sheet, task processed at row:", row_number)
+                print("point15: task_service.check_tasks_from_sheet, task processed at row:", row_number)
                 row_number += 1
         else:
             continue
