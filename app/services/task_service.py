@@ -76,9 +76,17 @@ def check_tasks_from_sheet(sheet_id: str):
             for record in page_content:
                 print("point12: task_service.check_tasks_from_sheet, iterate over records, row:", row_number)
                 # prepare the task object
-                try: contact = gsheet_service.get_specific_contact(contacts, record['owner'])
-                except: contact = {'number': '0', 'name1': 'Unknown', 'mail': 'Unknown', 'phone': 'Unknown'}
-                created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
+                try:
+                    if record['owner'] and record['owner'] not in ["", " ", None]:
+                        contact = gsheet_service.get_specific_contact(contacts, record['owner'])
+                    else:
+                        contact = {'number': '0', 'name1': 'Unknown', 'mail': 'Unknown', 'phone': 'Unknown'}
+                except:
+                    contact = {'number': '0', 'name1': 'Unknown', 'mail': 'Unknown', 'phone': 'Unknown'}
+
+                try: created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
+                except: created_at = datetime.now()
+                
                 due_date = datetime.strptime(record['Delivery date'], "%Y-%m-%d") if record['Delivery date'] else None
                 send = True
                 print("point13: task_service.check_tasks_from_sheet, task object preprepared")
@@ -88,20 +96,20 @@ def check_tasks_from_sheet(sheet_id: str):
                     created_at=created_at,
                     updated_at=datetime.now(),
                     sheetID=sheet.id,
-                    projectName=page.title,
-                    pageID=page.id,
+                    projectName=str(page.title),
+                    pageID=str(page.id),
                     row_number=row_number,
                     ownerID=str(contact['number']),
                     ownerName=record['owner'],
                     ownerEmail=contact['mail'],
                     ownerPhone=str(contact['phone']),
                     managerName=manager['name1'],
-                    points=record['points'],
+                    points=str(record['points']),
                     status=record['Status'],
                     taskText=record['Task'],
                     priority=record['Priority'],
                     dueDate=due_date,
-                    notes=record['Notes']
+                    notes=str(record['Notes'])
                 )
                 print("point14: task_service.check_tasks_from_sheet, task object created")
 
