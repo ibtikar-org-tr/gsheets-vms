@@ -117,7 +117,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 if task_obj.status.lower() == "completed":
                     task_obj.completed_at = datetime.now()
                     send = False
-                elif task_obj.status.lower() == "rejected":
+                elif task_obj.status.lower() == "blocked":
                     task_obj.blocked_at = datetime.now()
                     send = False
                 
