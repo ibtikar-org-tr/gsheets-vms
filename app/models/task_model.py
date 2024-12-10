@@ -11,14 +11,14 @@ class Task(SQLModel, table=True):
     last_reported: Optional[datetime] = None
     sheetID: str
     projectName: str
-    pageID: int
+    pageID: str
     row_number: int
     ownerID: str
     ownerName: str
     ownerEmail: str
     ownerPhone: str
     managerName: str
-    points: int
+    points: str
     status: str
     taskText: str
     priority: str
