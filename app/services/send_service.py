@@ -32,7 +32,7 @@ def send_new_task(task: task_model.Task, manager):
         message=text
     )
 
-    return "send_new_task sent successfully"
+    print("send_new_task sent successfully")
 
 def send_reminder_task(task: task_model.Task, manager):
     text = f"""
@@ -63,7 +63,7 @@ def send_reminder_task(task: task_model.Task, manager):
         message=text
     )
 
-    return "send_reminder_task sent successfully"
+    print("send_reminder_task sent successfully")
 
 def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Task, manager):
     text = f"""
@@ -95,7 +95,7 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
         message=text
     )
 
-    return "send_updated_dueDate_task sent successfully"
+    print("send_updated_dueDate_task sent successfully")
 
 def send_late_task(task: task_model.Task, manager):
     text = f"""
@@ -126,7 +126,7 @@ def send_late_task(task: task_model.Task, manager):
         message=text
     )
 
-    return "send_late_task sent successfully"
+    print("send_late_task sent successfully")
 
 # SEND to MANAGER ------------------------------------------------
 def send_to_manager_missing_data(task: task_model.Task, manager):
@@ -158,4 +158,4 @@ def send_to_manager_missing_data(task: task_model.Task, manager):
         message=text
     )
 
-    return "send_to_manager_missing_data sent successfully"
+    print("send_to_manager_missing_data sent successfully")
