@@ -81,7 +81,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 print("point12: task_service.check_tasks_from_sheet, iterate over records, row:", row_number)
                 # prepare the task object
                 try:
-                    if record['owner'] and record['owner'] not in ["", " ", None]:
+                    if record['owner'] and record['owner'].strip():
                         contact = gsheet_service.get_specific_contact(contacts, record['owner'])
                     else:
                         contact = {'number': '0', 'name1': 'Unknown', 'mail': 'Unknown', 'phone': 'Unknown'}
