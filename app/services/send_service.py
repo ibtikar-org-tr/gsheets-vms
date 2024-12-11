@@ -85,9 +85,9 @@ def send_late_task(task: task_model.Task, manager):
     """
 
     mail_service.send_email(
+        to=task.ownerEmail,
         subject=f"مهمّة متأخّرة: {task.projectName}",
-        message=text,
-        to=task.ownerEmail
+        message=text
     )
 
     mail_service.send_sms(
