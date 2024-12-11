@@ -130,7 +130,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 existing_task = search_task(sheet.id, page.title, row_number)
 
                 # check if the task has missing data
-                if any(value in (None, False, "") for value in (task_obj.ownerName, task_obj.points, task_obj.taskText, task_obj.priority, task_obj.dueDate)):
+                if not task_obj.ownerName or not task_obj.points or not task_obj.taskText or not task_obj.priority or not task_obj.dueDate:
                     if not existing_task:
                         if send: 
                             send_service.send_to_manager_missing_data(task_obj, manager)
