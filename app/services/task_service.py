@@ -127,11 +127,20 @@ def check_tasks_from_sheet(sheet_id: str):
                 # check if the task has missing data
                 if not task_obj.ownerName or not task_obj.points or not task_obj.taskText or not task_obj.priority or not task_obj.dueDate:
                     if not existing_task:
-                          if send: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()  
+                        if send: 
+                            send_service.send_to_manager_missing_data(task_obj, manager)
+                            task_obj.last_reported = datetime.now()
+                            print(f"send missing data to manager, (if not existing_task), at row: {row_number}")
                     elif not existing_task.last_reported:
-                        if send: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()
+                        if send:
+                            send_service.send_to_manager_missing_data(task_obj, manager)
+                            task_obj.last_reported = datetime.now()
+                            print(f"send missing data to manager, (elif not existing_task.last_reported), at row: {row_number}")
                     elif existing_task.last_reported and existing_task.last_reported < datetime.now() - timedelta(days=1):
-                        if send: send_service.send_to_manager_missing_data(task_obj, manager); task_obj.last_reported = datetime.now()
+                        if send:
+                            send_service.send_to_manager_missing_data(task_obj, manager)
+                            task_obj.last_reported = datetime.now()
+                            print(f"send missing data to manager, (elif existing_task.last_reported and existing_task.last_reported < datetime.now() - timedelta(days=1)), at row: {row_number}")
                     send = False
 
                 if existing_task:
