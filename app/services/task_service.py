@@ -29,20 +29,21 @@ def search_task(sheetID: str, projectName: str, row_number: int):
     with db_connection.get_session() as session:
         task = session.exec(select(task_model.Task).where(task_model.Task.sheetID == sheetID, task_model.Task.projectName == projectName, task_model.Task.row_number == row_number)).first()
     return task
-    def update_task_by_id(task_id: str, task: task_model.Task):
-        with db_connection.get_session() as session:
-            existing_task = session.get(task_model.Task, task_id)
-            if existing_task:
-                for key, value in task.model_dump().items():
-                    if key in ['updated_at', 'last_sent', 'last_reported'] and not value:
-                        continue
-                    if key in ['created_at', 'completed_at', 'blocked_at'] and getattr(existing_task, key):
-                        continue
-                    setattr(existing_task, key, value)
-                session.add(existing_task)
-                session.commit()
-                session.refresh(existing_task)
-            return existing_task
+
+def update_task_by_id(task_id: str, task: task_model.Task):
+    with db_connection.get_session() as session:
+        existing_task = session.get(task_model.Task, task_id)
+        if existing_task:
+            for key, value in task.model_dump().items():
+                if key in ['updated_at', 'last_sent', 'last_reported'] and not value:
+                    continue
+                if key in ['created_at', 'completed_at', 'blocked_at'] and getattr(existing_task, key):
+                    continue
+                setattr(existing_task, key, value)
+            session.add(existing_task)
+            session.commit()
+            session.refresh(existing_task)
+        return existing_task
 
 def update_task_by_search(old_task: task_model.Task, new_task: task_model.Task):
     task = search_task(old_task.sheetID, old_task.projectName, old_task.row_number)
