@@ -34,6 +34,37 @@ def send_new_task(task: task_model.Task, manager):
 
     return "send_new_task sent successfully"
 
+def send_reminder_task(task: task_model.Task, manager):
+    text = f"""
+    السّلام عليكم
+    تذكير بشأن المهمّة التّالية
+    
+    المهمّة: *{task.taskText}*
+    الاستعجاليّة: {task.priority}
+    آخر موعد للتّسليم: *{task.dueDate.strftime("%Y-%m-%d") if task.dueDate else "N/A"}*
+    
+    ملاحظات: {task.notes}
+
+    المشروع: {task.projectName}
+    مسؤول المشروع: {manager['name1']}
+    رقم مسؤول المشروع: wa.me/{manager['phone']}
+
+    رابط ملف المتابعة: https://docs.google.com/spreadsheets/d/{task.sheetID}/?gid={task.pageID}
+    """
+
+    mail_service.send_email(
+        to=task.ownerEmail,
+        subject=f"تذكير بالمهمّة: {task.projectName}",
+        message=text
+    )
+
+    mail_service.send_sms(
+        phone=task.ownerPhone,
+        message=text
+    )
+
+    return "send_reminder_task sent successfully"
+
 def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Task, manager):
     text = f"""
     السّلام عليكم
