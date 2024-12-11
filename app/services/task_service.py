@@ -159,7 +159,7 @@ def check_tasks_from_sheet(sheet_id: str):
                     elif existing_task.dueDate != task_obj.dueDate:
                         if send: send_service.send_updated_dueDate_task(existing_task, task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                         update_task_by_id(existing_task.id, task_obj)
-                    if existing_task.status != task_obj.status or existing_task.points != task_obj.points or existing_task.taskText != task_obj.taskText or existing_task.priority != task_obj.priority or existing_task.notes != task_obj.notes:
+                    if existing_task.status != task_obj.status or existing_task.points != task_obj.points or existing_task.taskText != task_obj.taskText or existing_task.priority != task_obj.priority or existing_task.notes != task_obj.notes or existing_task.managerName != task_obj.managerName or existing_task.ownerName != task_obj.ownerName or existing_task.ownerEmail != task_obj.ownerEmail or existing_task.ownerPhone != task_obj.ownerPhone or existing_task.last_reported != task_obj.last_reported or existing_task.last_sent != task_obj.last_sent or existing_task.completed_at != task_obj.completed_at or existing_task.blocked_at != task_obj.blocked_at or existing_task.milestone != task_obj.milestone:
                         update_task_by_id(existing_task.id, task_obj)
                 # create the task if it doesn't exist
                 else:
