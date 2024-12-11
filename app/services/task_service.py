@@ -35,6 +35,8 @@ def update_task_by_id(task_id: str, task: task_model.Task):
         existing_task = session.get(task_model.Task, task_id)
         if existing_task:
             for key, value in task.model_dump().items():
+                if key in ['last_sent', 'last_reported'] and not value:
+                    continue
                 setattr(existing_task, key, value)
             session.add(existing_task)
             session.commit()
