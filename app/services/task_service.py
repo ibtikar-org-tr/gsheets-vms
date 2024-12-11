@@ -91,26 +91,31 @@ def check_tasks_from_sheet(sheet_id: str):
                 send = True
                 print("point13: task_service.check_tasks_from_sheet, task object preprepared")
 
-                # create a new task object
-                task_obj = task_model.Task(
-                    created_at=created_at,
-                    updated_at=datetime.now(),
-                    sheetID=sheet.id,
-                    projectName=str(page.title),
-                    pageID=str(page.id),
-                    row_number=row_number,
-                    ownerID=str(contact['number']),
-                    ownerName=record['owner'],
-                    ownerEmail=contact['mail'],
-                    ownerPhone=str(contact['phone']),
-                    managerName=manager['name1'],
-                    points=str(record['points']),
-                    status=record['Status'],
-                    taskText=record['Task'],
-                    priority=record['Priority'],
-                    dueDate=due_date,
-                    notes=str(record['Notes'])
-                )
+                try:
+                    # create a new task object
+                    task_obj = task_model.Task(
+                        created_at=created_at,
+                        updated_at=datetime.now(),
+                        sheetID=sheet.id,
+                        projectName=str(page.title),
+                        pageID=str(page.id),
+                        row_number=row_number,
+                        ownerID=str(contact['number']),
+                        ownerName=record['owner'],
+                        ownerEmail=contact['mail'],
+                        ownerPhone=str(contact['phone']),
+                        managerName=manager['name1'],
+                        points=str(record['points']),
+                        status=record['Status'],
+                        taskText=record['Task'],
+                        priority=record['Priority'],
+                        dueDate=due_date,
+                        notes=str(record['Notes'])
+                    )
+                except Exception as e:
+                    print(f"at row {row_number}, Error creating task object: {e}")
+                    continue
+                
                 print("point14: task_service.check_tasks_from_sheet, task object created")
 
                 # check if the task is completed or blocked
