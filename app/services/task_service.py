@@ -157,13 +157,11 @@ def check_tasks_from_sheet(sheet_id: str):
                             if send: send_service.send_late_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                         elif task_obj.dueDate and task_obj.dueDate > datetime.now() and existing_task.last_sent < datetime.now() - timedelta(days=1):
                             if send: send_service.send_updated_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
-                    # check if the task is updated, and update it
+                    # check if the task is updated, and send if necessary
                     if existing_task.ownerID != task_obj.ownerID:
                         if send: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
-                        update_task_by_id(existing_task.id, task_obj)
                     elif existing_task.dueDate != task_obj.dueDate:
                         if send: send_service.send_updated_dueDate_task(existing_task, task_obj, manager); task_obj.last_sent = datetime.now(); send = False
-                        update_task_by_id(existing_task.id, task_obj)
                     # update anyways
                     update_task_by_id(existing_task.id, task_obj)
                 # create the task if it doesn't exist
