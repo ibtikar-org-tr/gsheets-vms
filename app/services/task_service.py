@@ -71,7 +71,7 @@ def check_tasks_from_sheet(sheet_id: str):
         if page.title.lower() not in ["contacts", "imported"]:
             # get all records from the page
             page_content = page.get_all_records()
-            print("point11: task_service.check_tasks_from_sheet - found page with title:", page.title)
+            print(datetime.now(), "point11: task_service.check_tasks_from_sheet - found page with title:", page.title)
             # set the start row number to 1
             row_number = 1
             # get the first contact as the manager
