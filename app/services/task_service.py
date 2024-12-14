@@ -192,11 +192,14 @@ def check_all_sheets():
 def run_task_15min_scheduler():
     istanbul_tz = pytz.timezone('Europe/Istanbul')
     while True:
-        now = datetime.now(istanbul_tz)
-        if now.hour >= 8 and now.hour < 22:
-            print("Running run_task_15min_scheduler...")
-            check_all_sheets()
-            print("Completed run_task_15min_scheduler. Sleeping for 15 minutes...")
-        else:
-            print("Outside of working hours. Sleeping for 15 minutes...")
+        try:
+            now = datetime.now(istanbul_tz)
+            if now.hour >= 8 and now.hour < 22:
+                print("Running run_task_15min_scheduler...")
+                check_all_sheets()
+                print("Completed run_task_15min_scheduler. Sleeping for 15 minutes...")
+            else:
+                print("Outside of working hours. Sleeping for 15 minutes...")
+        except Exception as e:
+            print(f"Error in run_task_15min_scheduler: {e}")
         time.sleep(15 * 60)  # Sleep for 15 minutes (15 * 60 seconds)
