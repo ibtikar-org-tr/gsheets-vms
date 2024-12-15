@@ -33,3 +33,19 @@ async def run_task_15min_scheduler():
         logger.error(f"Error running task scheduler: {e}")
         logger.error(f"Error occurred in file {e.__traceback__.tb_frame.f_code.co_filename}, function {e.__traceback__.tb_frame.f_code.co_name}, line {e.__traceback__.tb_lineno}")
         raise HTTPException(status_code=400, detail="Error running task scheduler")
+    
+async def start_scheduler():
+    try:
+        task_service.start_scheduler()
+    except Exception as e:
+        logger.error(f"Error starting scheduler: {e}")
+        logger.error(f"Error occurred in file {e.__traceback__.tb_frame.f_code.co_filename}, function {e.__traceback__.tb_frame.f_code.co_name}, line {e.__traceback__.tb_lineno}")
+        raise HTTPException(status_code=400, detail="Error starting scheduler")
+    
+async def stop_scheduler():
+    try:
+        task_service.stop_scheduler()
+    except Exception as e:
+        logger.error(f"Error stopping scheduler: {e}")
+        logger.error(f"Error occurred in file {e.__traceback__.tb_frame.f_code.co_filename}, function {e.__traceback__.tb_frame.f_code.co_name}, line {e.__traceback__.tb_lineno}")
+        raise HTTPException(status_code=400, detail="Error stopping scheduler")
