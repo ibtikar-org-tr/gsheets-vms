@@ -190,6 +190,14 @@ def check_all_sheets():
         print("point4: task_service.check_all_sheets, iterate over sheets")
         check_tasks_from_sheet(sheet.sheetID)
 
+def check_all_sheets_at_work_hours():
+    istanbul_tz = pytz.timezone('Europe/Istanbul')
+    if 8 <= datetime.now().hour < 22:
+        print("Running check_all_sheets_at_work_hours... at", datetime.now())
+        check_all_sheets()
+    else:
+        print("Outside of working hours. timestamp is", datetime.now())
+
 def run_task_15min_scheduler():
     istanbul_tz = pytz.timezone('Europe/Istanbul')
     while True:
@@ -208,7 +216,7 @@ def run_task_15min_scheduler():
 scheduler = BackgroundScheduler()
 
 def start_scheduler():
-    scheduler.add_job(check_all_sheets, 'interval', minutes=1)
+    scheduler.add_job(check_all_sheets, 'interval', minutes=15)
     scheduler.start()
     print("Scheduler started at", datetime.now())
 
