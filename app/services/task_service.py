@@ -195,11 +195,11 @@ def run_task_15min_scheduler():
         try:
             now = datetime.now(istanbul_tz)
             if now.hour >= 8 and now.hour < 22:
-                print("Running run_task_15min_scheduler...")
+                print("Running run_task_15min_scheduler... at", datetime.now())
                 check_all_sheets()
-                print("Completed run_task_15min_scheduler. Sleeping for 15 minutes...")
+                print("Completed run_task_15min_scheduler. at", datetime.now())
             else:
-                print("Outside of working hours. Sleeping for 15 minutes...")
+                print("Outside of working hours. timestamp is", datetime.now())
         except Exception as e:
-            print(f"Error in run_task_15min_scheduler: {e}")
-        time.sleep(15 * 60)  # Sleep for 15 minutes (15 * 60 seconds)
+            print("Error running run_task_15min_scheduler:", e)
+        time.sleep(15 * 60)
