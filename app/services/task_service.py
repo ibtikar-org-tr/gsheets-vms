@@ -6,6 +6,7 @@ import time
 from app.db import db_connection
 from sqlmodel import select
 import pytz
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 def get_all_tasks():
@@ -203,3 +204,14 @@ def run_task_15min_scheduler():
         except Exception as e:
             print("Error running run_task_15min_scheduler:", e)
         time.sleep(15 * 60)
+
+scheduler = BackgroundScheduler()
+
+def start_scheduler():
+    scheduler.add_job(check_all_sheets, 'interval', minutes=1)
+    scheduler.start()
+    print("Scheduler started at", datetime.now())
+
+def stop_scheduler():
+    scheduler.shutdown()
+    print("Scheduler stopped at", datetime.now())
