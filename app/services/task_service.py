@@ -192,7 +192,7 @@ def check_all_sheets():
 
 def check_all_sheets_at_work_hours():
     istanbul_tz = pytz.timezone('Europe/Istanbul')
-    if 8 <= datetime.now().hour < 22:
+    if 8 <= datetime.now(istanbul_tz).hour < 22:
         print("Running check_all_sheets_at_work_hours... at", datetime.now())
         check_all_sheets()
     else:
@@ -216,7 +216,14 @@ def run_task_15min_scheduler():
 scheduler = BackgroundScheduler()
 
 def start_scheduler():
-    scheduler.add_job(check_all_sheets, 'interval', minutes=15)
+    # Run the task immediately
+    try:
+        check_all_sheets_at_work_hours()
+    except Exception as e:
+        print("Error running check_all_sheets:", e)
+
+    # Schedule the task to run every 15 minutes
+    scheduler.add_job(check_all_sheets_at_work_hours, 'interval', minutes=15)
     scheduler.start()
     print("Scheduler started at", datetime.now())
 
