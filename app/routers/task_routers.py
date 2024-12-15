@@ -21,3 +21,13 @@ async def check_all_sheets():
 async def run_task_15min_scheduler():
     await task_handlers.run_task_15min_scheduler()
     return {"message": "Background task started to check all sheets every 15 minutes"}
+
+@router.post("/start-scheduler")
+async def start_scheduler_endpoint():
+    await task_handlers.start_scheduler()
+    return {"message": "Scheduler started."}
+
+@router.post("/stop-scheduler")
+async def stop_scheduler_endpoint():
+    await task_handlers.stop_scheduler()
+    return {"message": "Scheduler stopped."}
