@@ -1,13 +1,14 @@
 from app.models import task_model
-from app.services import gsheet_service, sheet_service
+from app.db import db_connection
+from app.services import gsheet_service
+from app.services import sheet_service
 from app.services import send_service
+from app.services import formatting
 from datetime import datetime, timedelta
 import time
-from app.db import db_connection
 from sqlmodel import select
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
-import formatting
 
 def get_all_tasks():
     with db_connection.get_session() as session:
