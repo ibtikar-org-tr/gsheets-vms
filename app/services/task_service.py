@@ -89,10 +89,10 @@ def check_tasks_from_sheet(sheet_id: str):
                 except:
                     contact = {'number': '0', 'name1': 'Unknown', 'mail': 'Unknown', 'phone': 'Unknown'}
 
-                try: created_at = datetime.strptime(record['Start date'], "%Y-%m-%d") if record['Start date'] else datetime.now()
+                try: created_at = datetime.strptime2(record['Start date']) if record['Start date'] else datetime.now()
                 except: created_at = datetime.now()
                 
-                due_date = datetime.strptime(record['Delivery date'], "%Y-%m-%d") if record['Delivery date'] else None
+                due_date = datetime.strptime2(record['Delivery date']) if record['Delivery date'] else None
                 send = True
                 print("point13: task_service.check_tasks_from_sheet, task object preprepared")
 
