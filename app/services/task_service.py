@@ -2,6 +2,7 @@ from app.models import task_model
 from app.db import db_connection
 from app.services import gsheet_service
 from app.services import sheet_service
+from app.services import drive_service
 from app.services import send_service
 from app.services import formatting
 from datetime import datetime, timedelta
@@ -76,9 +77,11 @@ def check_tasks_from_sheet(sheet_id: str):
             print(datetime.now(), "point11: task_service.check_tasks_from_sheet - found page with title:", page.title)
             # set the start row number to 1
             row_number = 1
+            # reset the project contacts' mail list
+            page_contacts_mails= []
             # get the first contact as the manager
             manager = gsheet_service.get_specific_contact(contacts, page_content[0]['owner'])
-
+            
             # iterate over the records
             for record in page_content:
                 print("point12: task_service.check_tasks_from_sheet, iterate over records, row:", row_number)
@@ -126,6 +129,11 @@ def check_tasks_from_sheet(sheet_id: str):
                     continue
                 
                 print("point14: task_service.check_tasks_from_sheet, task object created")
+
+                # add the contact's mail to the list
+                if task_obj.ownerEmail:
+                    page_contacts_mails.append(task_obj.ownerEmail)
+                    print("point14.1: task_service.check_tasks_from_sheet, contact mail added to list")
 
                 # check if the task is completed or blocked
                 if task_obj.status.lower() == "completed":
@@ -183,9 +191,17 @@ def check_tasks_from_sheet(sheet_id: str):
 
                 print("point15: task_service.check_tasks_from_sheet, task processed at row:", row_number)
                 row_number += 1
+
+            # check the contacts' mails
+            if page_contacts_mails:
+                drive_service.check_list_of_mails(page_contacts_mails)
+                print("point16: task_service.check_tasks_from_sheet, page contacts mails checked")
+            else:
+                print("point16: task_service.check_tasks_from_sheet, no contacts mails found") 
         else:
             continue
     return "Tasks imported and sent successfully"
+
 
 def check_all_sheets():
     print("point2: task_service.check_all_sheets, start")
