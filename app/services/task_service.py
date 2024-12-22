@@ -77,6 +77,8 @@ def check_tasks_from_sheet(sheet_id: str):
             print(datetime.now(), "point11: task_service.check_tasks_from_sheet - found page with title:", page.title)
             # set the start row number to 1
             row_number = 1
+            # set the associated folder link
+            associated_folder_link = page_content[0]['Notes']
             # reset the project contacts' mail list
             page_contacts_mails= []
             # get the first contact as the manager
@@ -194,7 +196,7 @@ def check_tasks_from_sheet(sheet_id: str):
 
             # check the contacts' mails
             if page_contacts_mails:
-                drive_service.check_list_of_mails(page_contacts_mails)
+                drive_service.check_list_of_mails(associated_folder_link, page_contacts_mails)
                 print("point16: task_service.check_tasks_from_sheet, page contacts mails checked")
             else:
                 print("point16x: task_service.check_tasks_from_sheet, no contacts mails found") 
