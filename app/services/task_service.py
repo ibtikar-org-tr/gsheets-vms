@@ -197,7 +197,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 drive_service.check_list_of_mails(page_contacts_mails)
                 print("point16: task_service.check_tasks_from_sheet, page contacts mails checked")
             else:
-                print("point16: task_service.check_tasks_from_sheet, no contacts mails found") 
+                print("point16x: task_service.check_tasks_from_sheet, no contacts mails found") 
         else:
             continue
     return "Tasks imported and sent successfully"
