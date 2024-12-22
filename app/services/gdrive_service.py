@@ -33,7 +33,7 @@ def add_permission_to_gdrive_folder(folder_link: str, mail: str):
             body=new_permission,
             fields='id'
         ).execute()
-        print(f"Permission granted: {response}")
+        print(f"Permission granted for {mail} on {folder_link}: {response}")
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
@@ -63,7 +63,7 @@ def remove_permission_from_gdrive_folder(folder_link: str, mail: str):
             fileId=folder_link_to_id(folder_link),
             permissionId=mail
         ).execute()
-        print(f"Permission removed: {response}")
+        print(f"Permission removed for {mail} on {folder_link}: {response}")
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
@@ -106,5 +106,3 @@ def folder_link_to_id(folder_link: str) -> str:
     folder_id = folder_id.split('?')[0]
 
     return folder_id
-
-
