@@ -197,7 +197,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 row_number += 1
 
             # check the contacts' mails
-            if page_contacts_mails:
+            if page_contacts_mails and associated_folder_link:
                 drive_service.check_list_of_mails(folder_link = associated_folder_link, page_mails = page_contacts_mails)
                 print("point16: task_service.check_tasks_from_sheet, page contacts mails checked")
             else:
