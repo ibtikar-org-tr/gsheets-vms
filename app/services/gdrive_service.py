@@ -102,7 +102,9 @@ def check_drive_folder_permission(folder_link: str):
 
 def folder_link_to_id(folder_link: str) -> str:
     # Extract the folder ID from the link
-    folder_id = folder_link.split('/')[-1].split('?')[0]
+    folder_id = folder_link.split('/')[-1]
+    folder_id = folder_id.split('?')[0]
+
     return folder_id
 
 
