@@ -79,7 +79,7 @@ def check_tasks_from_sheet(sheet_id: str):
             row_number = 1
             # set the associated folder link
             associated_folder_link = page_content[0]['Notes']
-            print("associated_folder_link:", associated_folder_link)
+            print("associated_folder_link:", associated_folder_link, "with type:", type(associated_folder_link))
             # reset the project contacts' mail list
             page_contacts_mails= []
             # get the first contact as the manager
@@ -137,7 +137,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 if task_obj.ownerEmail:
                     if task_obj.ownerEmail not in page_contacts_mails:
                         page_contacts_mails.append(task_obj.ownerEmail)
-                        print("point14.1: task_service.check_tasks_from_sheet, contact mail added to list")
+                        print(f"point14.1: task_service.check_tasks_from_sheet, contact mail {task_obj.ownerEmail} added to list")
 
                 # check if the task is completed or blocked
                 if task_obj.status.lower() == "completed":
@@ -198,7 +198,7 @@ def check_tasks_from_sheet(sheet_id: str):
 
             # check the contacts' mails
             if page_contacts_mails:
-                drive_service.check_list_of_mails(associated_folder_link, page_contacts_mails)
+                drive_service.check_list_of_mails(folder_link = associated_folder_link, page_mails = page_contacts_mails)
                 print("point16: task_service.check_tasks_from_sheet, page contacts mails checked")
             else:
                 print("point16x: task_service.check_tasks_from_sheet, no contacts mails found") 
