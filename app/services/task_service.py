@@ -3,6 +3,7 @@ from app.db import db_connection
 from app.services import gsheet_service
 from app.services import sheet_service
 from app.services import send_service
+from app.services import ggroup_service
 from app.services import formatting
 from datetime import datetime, timedelta
 import time
@@ -78,6 +79,7 @@ def check_tasks_from_sheet(sheet_id: str):
             row_number = 1
             # get the first contact as the manager
             manager = gsheet_service.get_specific_contact(contacts, page_content[0]['owner'])
+            ggroup_mail = page_content[0]['Task']
             # iterate over the records
             for record in page_content:
                 print("point12: task_service.check_tasks_from_sheet, iterate over records, row:", row_number)
@@ -125,6 +127,11 @@ def check_tasks_from_sheet(sheet_id: str):
                     continue
                 
                 print("point14: task_service.check_tasks_from_sheet, task object created")
+
+                # add the mail to ggroup
+                if task_obj.ownerEmail:
+                    ggroup_service.add_mail_to_ggroup(task_obj.ownerEmail, ggroup_mail)
+                    print("point14.1: task_service.check_tasks_from_sheet")
 
                 # check if the task is completed or blocked
                 if task_obj.status.lower() == "completed":
