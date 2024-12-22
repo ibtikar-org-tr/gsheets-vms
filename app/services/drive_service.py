@@ -5,10 +5,16 @@ def check_list_of_mails(folder_link: str, page_mails: list):
     will_be_deleted = []
     existing_mails = []
 
-    exising_permissions = gdrive_service.check_drive_folder_permission(folder_link)
-    for permission in exising_permissions['permissions']:
-        if permission['type'] == 'user' and not permission['role'] == 'owner':
-            existing_mails.append(permission['emailAddress'])
+    try:
+        exising_permissions = gdrive_service.check_drive_folder_permission(folder_link)
+    except Exception as e:
+        print(f"An error occurred when checking permissions: {e}")
+        return None
+
+    if exising_permissions:
+        for permission in exising_permissions['permissions']:
+            if permission['type'] == 'user' and not permission['role'] == 'owner':
+                existing_mails.append(permission['emailAddress'])
 
     for mail in page_mails:
         if mail not in existing_mails:
