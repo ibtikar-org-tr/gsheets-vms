@@ -2,6 +2,7 @@ from app.models import task_model
 from app.db import db_connection
 from app.services import gsheet_service
 from app.services import sheet_service
+from app.services import moodle_service
 from app.services import drive_service
 from app.services import send_service
 from app.services import formatting
@@ -77,10 +78,11 @@ def check_tasks_from_sheet(sheet_id: str):
             print(datetime.now(), "point11: task_service.check_tasks_from_sheet - found page with title:", page.title)
             # set the start row number to 1
             row_number = 1
-            # set the associated folder link
+            # set the associated drive folder link and moodle course link
             associated_folder_link = page_content[0]['Notes']
             print("associated_folder_link:", associated_folder_link, "with type:", type(associated_folder_link))
-            # reset the project contacts' mail list
+            associated_course_link = page_content[0]['Milestone']
+            print("associated_course_link:", associated_course_link, "with type:", type(associated_course_link))
             page_contacts_mails= []
             # get the first contact as the manager
             manager = gsheet_service.get_specific_contact(contacts, page_content[0]['owner'])
@@ -199,6 +201,7 @@ def check_tasks_from_sheet(sheet_id: str):
             # check the contacts' mails
             if page_contacts_mails and associated_folder_link:
                 drive_service.check_list_of_mails(folder_link = associated_folder_link, page_mails = page_contacts_mails)
+                moodle_service.check_course_mails(course_link = associated_course_link, page_mails = page_contacts_mails)
                 print("point16: task_service.check_tasks_from_sheet, page contacts mails checked")
             else:
                 print("point16x: task_service.check_tasks_from_sheet, no contacts mails found") 
