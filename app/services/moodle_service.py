@@ -100,7 +100,11 @@ def get_user_id_by_field(input_value: str, field: str = "username"):
 
 # Loop through the list of emails and enroll them in the course
 def check_course_mails(course_link: str, page_mails: list):
-    course_id = course_link.split('id=')[1].split('&')[0]
+    try:
+        course_id = course_link.split('id=')[1].split('&')[0]
+    except Exception as e:
+        print(f"Error parsing Moodle course ID {course_link}: {e}")
+        return
     enrolled_users = get_enrolled_users_emails(course_id)
     
     will_be_added = [mail for mail in page_mails if mail not in enrolled_users]
