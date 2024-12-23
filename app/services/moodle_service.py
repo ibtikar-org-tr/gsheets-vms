@@ -99,18 +99,8 @@ def get_user_id_by_field(input_value: str, field: str = "username"):
         return None
 
 # Loop through the list of emails and enroll them in the course
-def check_course_mails(course_id: int, page_mails: list):
-    """
-    Check the list of enrolled users in a Moodle course and compare it with a list of emails.
-    Add or remove users based on the comparison.
-
-    Args:
-        course_id (int): The ID of the Moodle course.
-        page_mails (list): A list of email addresses to compare with the enrolled users.
-
-    Returns:
-        tuple: A tuple containing lists of emails to be added and removed.
-    """
+def check_course_mails(course_link: str, page_mails: list):
+    course_id = course_link.split('id=')[1].split('&')[0]
     enrolled_users = get_enrolled_users_emails(course_id)
     
     will_be_added = [mail for mail in page_mails if mail not in enrolled_users]
@@ -119,5 +109,4 @@ def check_course_mails(course_id: int, page_mails: list):
     for mail in will_be_added:
         response = enroll_students_to_course_by_mail(course_id = course_id, user_email = mail)
         print(response)
-
 
