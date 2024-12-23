@@ -74,9 +74,9 @@ def enroll_students_to_course_by_mail(course_id, user_email, role_id=5):
         # Make the API request
         response = requests.post(endpoint, json=params)
         response.raise_for_status()
-        return {"success": True, "message": "Users enrolled successfully."}
+        return {"success": True, "message": "User enrolled successfully."}
     except requests.exceptions.RequestException as e:
-        return {"success": False, "message": f"Error enrolling users: {e}"}
+        return {"success": False, "message": f"Error enrolling user {user_email}: {e}"}
 
 # Function to fetch user ID by username or email
 def get_user_id_by_field(input_value: str, field: str = "username"):
@@ -98,7 +98,7 @@ def get_user_id_by_field(input_value: str, field: str = "username"):
         print(f"Error fetching user ID for {input_value}: {e}")
         return None
 
-
+# Loop through the list of emails and enroll them in the course
 def check_course_mails(course_id: int, page_mails: list):
     """
     Check the list of enrolled users in a Moodle course and compare it with a list of emails.
@@ -112,9 +112,6 @@ def check_course_mails(course_id: int, page_mails: list):
         tuple: A tuple containing lists of emails to be added and removed.
     """
     enrolled_users = get_enrolled_users_emails(course_id)
-    
-    if not enrolled_users:
-        return None, None
     
     will_be_added = [mail for mail in page_mails if mail not in enrolled_users]
     # will_be_removed = [mail for mail in enrolled_users if mail not in page_mails]
