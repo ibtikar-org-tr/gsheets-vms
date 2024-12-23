@@ -35,7 +35,6 @@ def check_list_of_mails(folder_link: str, page_mails: list):
     for mail in will_be_added:
         try:
             gdrive_service.add_permission_to_gdrive_folder(folder_link = folder_link, mail = mail)
-            print(f"added: {mail}")
         except Exception as e:
             print(f"An error occurred when adding {mail}: {e}")
 
