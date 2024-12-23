@@ -56,7 +56,7 @@ def enroll_students_to_course_by_mail(course_id, user_email, role_id=5):
         dict: A dictionary with success and error information.
     """
     # Moodle API endpoint
-    endpoint = f"https://lms.ibtikar.org.tr/webservice/rest/server.php"
+    endpoint = f"{os.getenv('MOODLE_BASE_URL')}/webservice/rest/server.php"
     
     # # Fetch user IDs for the provided email addresses
     # user_ids = [get_user_id_by_field(email, "email") for email in email_list]
@@ -70,7 +70,7 @@ def enroll_students_to_course_by_mail(course_id, user_email, role_id=5):
 
     # API parameters for enrollment
     params = {
-    "wstoken": "1f9c50319b8dae50c381ecee5e851db0",
+    "wstoken": os.getenv('MOODLE_TOKEN'),
     "wsfunction": "enrol_manual_enrol_users",
     "moodlewsrestformat": "json",
     "enrolments[0][roleid]": role_id,
@@ -89,17 +89,17 @@ def enroll_students_to_course_by_mail(course_id, user_email, role_id=5):
 # Function to fetch user ID by username or email
 def get_user_id_by_field(input_value: str, field: str = "username"):
     # Moodle API endpoint
-    endpoint = f"https://lms.ibtikar.org.tr/webservice/rest/server.php"
+    endpoint = f"{os.getenv('MOODLE_BASE_URL')}/webservice/rest/server.php"
 
     params = {
-        'wstoken': "7da03140bf2931248dad6d599ec6aeee",
+        'wstoken': os.getenv('MOODLE_TOKEN'),
         'wsfunction': 'core_user_get_users_by_field',
         'moodlewsrestformat': 'json',
         'field': field, # field can be 'id' or 'idnumber' or 'username' or 'email'
         'values[0]': input_value
     }
     try:
-        userdata = requests.post(url, data=params)
+        userdata = requests.post(endpoint, data=params)
         userID = userdata.json()[0]['id']
         return userID
     except Exception as e:
