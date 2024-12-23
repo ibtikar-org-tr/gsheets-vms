@@ -49,7 +49,7 @@ def enroll_students_to_course_by_mail(course_id, user_email, role_id=5):
 
     Args:
         course_id (int): The ID of the Moodle course.
-        email_list (list): A list of email addresses of the students to enroll.
+        user_email: The email address of the user to enroll.
         role_id (int): The role ID to assign (default is 5 for students).
 
     Returns:
@@ -58,14 +58,6 @@ def enroll_students_to_course_by_mail(course_id, user_email, role_id=5):
     # Moodle API endpoint
     endpoint = f"{os.getenv('MOODLE_BASE_URL')}/webservice/rest/server.php"
     
-    # # Fetch user IDs for the provided email addresses
-    # user_ids = [get_user_id_by_field(email, "email") for email in email_list]
-    # if not user_ids:
-    #     return {"success": False, "message": "No users found for the provided email addresses."}
-
-    # # Prepare enrollment data
-    # enrolments = [{'roleid': role_id, 'userid': user_id, 'courseid': course_id} for user_id in user_ids]
-
     user_id = get_user_id_by_field(user_email[0], "email")
 
     # API parameters for enrollment
@@ -125,8 +117,10 @@ def check_course_mails(course_id: int, page_mails: list):
         return None, None
     
     will_be_added = [mail for mail in page_mails if mail not in enrolled_users]
-    will_be_removed = [mail for mail in enrolled_users if mail not in page_mails]
+    # will_be_removed = [mail for mail in enrolled_users if mail not in page_mails]
     
-    return will_be_added, will_be_removed
+    for mail in will_be_added:
+        response = enroll_students_to_course_by_mail(course_id = course_id, user_email = mail)
+        print(response)
 
 
