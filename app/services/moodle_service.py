@@ -107,7 +107,9 @@ def check_course_mails(course_link: str, page_mails: list):
         return
     enrolled_users = get_enrolled_users_emails(course_id)
     
-    will_be_added = [mail for mail in page_mails if mail not in enrolled_users]
+    ADMIN_MAIL = os.getenv('ADMIN_MAIL')
+
+    will_be_added = [mail for mail in page_mails if mail not in enrolled_users and mail != ADMIN_MAIL]
     # will_be_removed = [mail for mail in enrolled_users if mail not in page_mails]
     
     for mail in will_be_added:
