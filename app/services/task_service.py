@@ -81,7 +81,7 @@ def check_tasks_from_sheet(sheet_id: str):
             # set the associated drive folder link and moodle course link
             associated_folder_link = page_content[0]['Notes']
             print("associated_folder_link:", associated_folder_link, "with type:", type(associated_folder_link))
-            associated_course_link = page_content[0]['Milestone']
+            associated_course_link = page_content[0].get('Milestone', None)
             print("associated_course_link:", associated_course_link, "with type:", type(associated_course_link))
             page_contacts_mails= []
             # get the first contact as the manager
