@@ -35,3 +35,11 @@ def send_sms(phone, message):
         print("SMS sent successfully to ", phone)
     except requests.exceptions.RequestException as e:
         print(f"Failed to send SMS: {e}")
+
+def send_notification(username, projectname, title, content):
+    try:
+        response = requests.post(f"{os.getenv('NOTIFICATION_MS')}?username={username}&projectname={projectname}&title={title}&content={content}")
+        response.raise_for_status()
+        print("Notification sent successfully to ", username)
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to send Notification: {e}")
