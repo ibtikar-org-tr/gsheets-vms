@@ -32,6 +32,13 @@ def send_new_task(task: task_model.Task, manager):
         message=text
     )
 
+    mail_service.send_notification(
+        username=task.ownerID,
+        projectname=task.projectName,
+        title=f"مهمّة جديدة: {task.projectName}",
+        content=text
+    )
+
     print(datetime.now(), "send_new_task sent successfully: ", task)
 
 def send_reminder_task(task: task_model.Task, manager):
@@ -61,6 +68,13 @@ def send_reminder_task(task: task_model.Task, manager):
     mail_service.send_sms(
         phone=task.ownerPhone,
         message=text
+    )
+
+    mail_service.send_notification(
+        username=task.ownerID,
+        projectname=task.projectName,
+        title=f"تذكير بالمهمّة: {task.projectName}",
+        content=text
     )
 
     print(datetime.now(), "send_reminder_task sent successfully", task)
@@ -95,6 +109,13 @@ def send_updated_dueDate_task(old_task: task_model.Task, new_task: task_model.Ta
         message=text
     )
 
+    mail_service.send_notification(
+        username=new_task.ownerID,
+        projectname=new_task.projectName,
+        title=f"تحديث بخصوص المهمّة: {new_task.projectName}",
+        content=text
+    )
+
     print(datetime.now(), "send_updated_dueDate_task sent successfully", new_task)
 
 def send_late_task(task: task_model.Task, manager):
@@ -124,6 +145,13 @@ def send_late_task(task: task_model.Task, manager):
     mail_service.send_sms(
         phone=task.ownerPhone,
         message=text
+    )
+
+    mail_service.send_notification(
+        username=task.ownerID,
+        projectname=task.projectName,
+        title=f"مهمّة متأخّرة: {task.projectName}",
+        content=text
     )
 
     print(datetime.now(), "send_late_task sent successfully", task)
@@ -156,6 +184,13 @@ def send_to_manager_missing_data(task: task_model.Task, manager):
     mail_service.send_sms(
         phone=manager['phone'],
         message=text
+    )
+
+    mail_service.send_notification(
+        username=manager['id'],
+        projectname=task.projectName,
+        title=f"معلومات ناقصة بخصوص المهمّة: {task.projectName}",
+        content=text
     )
 
     print(datetime.now(), "send_to_manager_missing_data sent successfully", task)
