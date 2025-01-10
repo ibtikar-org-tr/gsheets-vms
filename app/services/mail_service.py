@@ -30,9 +30,14 @@ def send_email(to, subject, message):
 
 def send_sms(phone, message):
     try:
-        response = requests.post(f"{os.getenv('SMS_MS')}?phone={phone}&message={message}")
-        response.raise_for_status()
-        print("SMS sent successfully to ", phone)
+        SMS_MS = os.getenv('SMS_MS')
+        if SMS_MS:
+            response = requests.post(f"{os.getenv('SMS_MS')}?phone={phone}&message={message}")
+            response.raise_for_status()
+            print("SMS sent successfully to ", phone)
+        else:
+            print("SMS_MS not set, SMS not sent")
+            return
     except requests.exceptions.RequestException as e:
         print(f"Failed to send SMS: {e}")
 
