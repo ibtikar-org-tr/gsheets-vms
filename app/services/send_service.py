@@ -187,7 +187,7 @@ def send_to_manager_missing_data(task: task_model.Task, manager):
     )
 
     mail_service.send_notification(
-        username=manager['id'],
+        username=manager['number'],
         projectname=task.projectName,
         title=f"معلومات ناقصة بخصوص المهمّة: {task.projectName}",
         content=text
