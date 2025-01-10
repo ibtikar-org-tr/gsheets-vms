@@ -32,7 +32,7 @@ def send_sms(phone, message):
     try:
         SMS_MS = os.getenv('SMS_MS')
         if SMS_MS:
-            response = requests.post(f"{os.getenv('SMS_MS')}?phone={phone}&message={message}")
+            response = requests.post(f"{SMS_MS}?phone={phone}&message={message}")
             response.raise_for_status()
             print("SMS sent successfully to ", phone)
         else:
@@ -43,7 +43,8 @@ def send_sms(phone, message):
 
 def send_notification(username, projectname, title, content):
     try:
-        response = requests.post(f"{os.getenv('NOTIFICATION_MS')}?username={username}&projectname={projectname}&title={title}&content={content}")
+        NOTIFICATION_MS = os.getenv('NOTIFICATION_MS')
+        response = requests.post(f"{NOTIFICATION_MS}?username={username}&projectname={projectname}&title={title}&content={content}")
         response.raise_for_status()
         print("Notification sent successfully to ", username)
     except requests.exceptions.RequestException as e:
