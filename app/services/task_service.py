@@ -57,7 +57,7 @@ def update_task_by_search(old_task: task_model.Task, new_task: task_model.Task):
 
 
 def check_tasks_from_sheet(sheet_id: str):
-    print("point5: task_service.check_tasks_from_sheet, start")
+    print("point5") # start
     # get the sheet
     sheet = gsheet_service.get_gsheet(sheet_id)
     if sheet is None:
@@ -67,29 +67,29 @@ def check_tasks_from_sheet(sheet_id: str):
     contacts = gsheet_service.get_contacts_page(sheet.worksheets())
     if contacts is None:
         raise ValueError(f"Error parsing sheet id {sheet_id}: Contacts not found")
-    print("point9: task_service.check_tasks_from_sheet, contacts found")
+    print("point9") # contacts found
     # iterate over the pages
     for page in sheet.worksheets():
-        print("point10: task_service.check_tasks_from_sheet, iterate over pages")
+        print("point10") # iterate over pages
         # skipping the contacts and imported pages
         if page.title.lower() not in ["contacts", "imported"]:
             # get all records from the page
             page_content = page.get_all_records()
-            print(datetime.now(), "point11: task_service.check_tasks_from_sheet - found page with title:", page.title)
+            print(datetime.now(), "point11: found page with title:", page.title)
             # set the start row number to 1
             row_number = 1
             # set the associated drive folder link and moodle course link
-            associated_folder_link = page_content[0]['Notes']
-            print("associated_folder_link:", associated_folder_link, "with type:", type(associated_folder_link))
+            associated_folder_link = page_content[0].get('Notes', None)
+            # print("associated_folder_link:", associated_folder_link, "with type:", type(associated_folder_link))
             associated_course_link = page_content[0].get('Milestone', None)
-            print("associated_course_link:", associated_course_link, "with type:", type(associated_course_link))
+            # print("associated_course_link:", associated_course_link, "with type:", type(associated_course_link))
             page_contacts_mails= []
             # get the first contact as the manager
             manager = gsheet_service.get_specific_contact(contacts, page_content[0]['owner'])
             
             # iterate over the records
             for record in page_content:
-                print("point12: task_service.check_tasks_from_sheet, iterate over records, row:", row_number)
+                print("point12: iterate over records, row:", row_number)
                 # prepare the task object
                 try:
                     if record['owner'] and record['owner'].strip():
@@ -106,7 +106,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 except: due_date = None
                 
                 send = True
-                print("point13: task_service.check_tasks_from_sheet, task object preprepared")
+                print("point13") # task object prepared
 
                 try:
                     # create a new task object
@@ -133,13 +133,13 @@ def check_tasks_from_sheet(sheet_id: str):
                     print(f"at row {row_number}, Error creating task object: {e}")
                     continue
                 
-                print("point14: task_service.check_tasks_from_sheet, task object created")
+                print("point14") # task object created
 
                 # add the contact's mail to the list
-                if task_obj.ownerEmail:
-                    if task_obj.ownerEmail not in page_contacts_mails:
-                        page_contacts_mails.append(task_obj.ownerEmail)
-                        print(f"point14.1: task_service.check_tasks_from_sheet, contact mail {task_obj.ownerEmail} added to list")
+                # if task_obj.ownerEmail:
+                #     if task_obj.ownerEmail not in page_contacts_mails:
+                #         page_contacts_mails.append(task_obj.ownerEmail)
+                #         print(f"point14.1: contact mail {task_obj.ownerEmail} added to list")
 
                 # check if the task is completed or blocked
                 if task_obj.status.lower() == "completed":
@@ -195,7 +195,7 @@ def check_tasks_from_sheet(sheet_id: str):
                     if send: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                     create_new_task(task_obj)
 
-                print("point15: task_service.check_tasks_from_sheet, task processed at row:", row_number)
+                print("point15") # task processed
                 row_number += 1
 
             # check the contacts' mails
@@ -207,19 +207,19 @@ def check_tasks_from_sheet(sheet_id: str):
                 if associated_course_link:
                     # moodle_service.check_course_mails(course_link = associated_course_link, page_mails = page_contacts_mails)
                     print("point15.3")
-                print("point16: task_service.check_tasks_from_sheet, page contacts mails checked")
+                print("point16") # page contacts mails checked
             else:
-                print("point16x: task_service.check_tasks_from_sheet, no contacts mails found") 
+                print("point16x") # no contacts mails found
         else:
             continue
     return "Tasks imported and sent successfully"
 
 
 def check_all_sheets():
-    print("point2: task_service.check_all_sheets, start")
+    print("point2") # start
     sheets = sheet_service.get_all_sheets()
     for sheet in sheets:
-        print("point4: task_service.check_all_sheets, iterate over sheets")
+        print("point4") # iterate over sheets
         check_tasks_from_sheet(sheet.sheetID)
 
 def check_all_sheets_at_work_hours():
