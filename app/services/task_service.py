@@ -141,6 +141,10 @@ def check_tasks_from_sheet(sheet_id: str):
                 #         page_contacts_mails.append(task_obj.ownerEmail)
                 #         print(f"point14.1: contact mail {task_obj.ownerEmail} added to list")
 
+                # check if the task started
+                if created_at > datetime.now() + timedelta(minutes=10):
+                    send = False
+
                 # check if the task is completed or blocked
                 if task_obj.status.lower() == "completed":
                     task_obj.completed_at = datetime.now()
