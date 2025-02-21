@@ -194,3 +194,38 @@ def send_to_manager_missing_data(task: task_model.Task, manager):
     )
 
     print(datetime.now(), "send_to_manager_missing_data sent successfully", task)
+
+def send_to_manager_daily_checkup(active_users, inactive_users, manager):
+    text = f"""
+    السّلام عليكم
+
+    هذه تقرير يومي بنشاط المستخدمين اليومي
+
+    المستخدمين النشطين:
+    {', '.join(active_users)}
+
+    المستخدمين الغير نشطين:
+    {', '.join(inactive_users)}
+
+    شكرًا
+    """
+
+    mail_service.send_email(
+        to=manager['mail'],
+        subject="تقرير يومي بنشاط المستخدمين",
+        message=text
+    )
+
+    mail_service.send_sms(
+        phone=manager['phone'],
+        message=text
+    )
+
+    mail_service.send_notification(
+        username=manager['number'],
+        projectname="تقرير يومي بنشاط المستخدمين",
+        title="تقرير يومي بنشاط المستخدمين",
+        content=text
+    )
+
+    print(datetime.now(), "send_to_manager_daily_checkup sent successfully", active_users, inactive_users)
