@@ -3,14 +3,14 @@ import requests
 from app.initializers import env
 from app.services import send_service
 from app.services import activity_repo
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def check_user_activity(username):
     try:
         ACTIVITY_MS = env.ACTIVITY_MS
         response = requests.post(f"{ACTIVITY_MS}?username={username}")
         response.raise_for_status()
-        return response.json()
+        return response.json() # "2022-10-05T00:00:00"
     except requests.exceptions.RequestException as e:
         print(f"Failed check_project_activity: {e}")
 
@@ -20,7 +20,7 @@ def check_and_report_project_activity(usernames_and_fullnames, manager_json):
     try:
         for username, fullname in usernames_and_fullnames.items():
             activity = check_user_activity(username)
-            if activity:
+            if activity and datetime.fromisoformat(activity) > datetime.now() - timedelta(days=1):
                 active_users.append(fullname)
             else:
                 inactive_users.append(fullname)
