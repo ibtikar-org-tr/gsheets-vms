@@ -1,7 +1,6 @@
 import os
 import requests
 from app.initializers import env
-from app.models import Manager
 from app.services import send_service
 from app.services import activity_repo
 from datetime import datetime
