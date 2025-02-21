@@ -18,8 +18,8 @@ fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from app import models
-from app.db import db_connection
+from app.models import activity_model, sheet_model, task_model, user_model
+from app.initializers import db
 
 target_metadata = SQLModel.metadata
 
@@ -39,7 +39,7 @@ def run_migrations_offline():
 
 def run_migrations_online():
     """Run migrations in 'online' mode."""
-    connectable = db_connection.get_session().bind
+    connectable = db.get_session().bind
 
     with connectable.connect() as connection:
         context.configure(
