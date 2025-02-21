@@ -144,8 +144,8 @@ def check_tasks_from_sheet(sheet_id: str):
                 #         page_contacts_mails.append(task_obj.ownerEmail)
                 #         print(f"point14.1: contact mail {task_obj.ownerEmail} added to list")
 
-                # add the contact's user id abd name to the list
-                if task_obj.ownerID and task_obj.ownerName:
+                # add the contact's user id and name to the list (only if an active task is assigned to them)
+                if task_obj.ownerID and task_obj.ownerName and task_obj.status.lower() != "completed" and task_obj.status.lower() != "blocked":
                     if (task_obj.ownerID, task_obj.ownerName) not in page_user_ids_and_names:
                         page_user_ids_and_names.append((task_obj.ownerID, task_obj.ownerName))
 
@@ -206,7 +206,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 else:
                     if send: send_service.send_new_task(task_obj, manager); task_obj.last_sent = datetime.now(); send = False
                     create_new_task(task_obj)
-
+                
                 print("point15") # task processed
                 row_number += 1
 
