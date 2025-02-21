@@ -211,7 +211,7 @@ def check_tasks_from_sheet(sheet_id: str):
                 row_number += 1
 
             # send activity report to manager
-            activity_obj = activity_repo.get_or_create_activity(manager['number'], manager['name1'], page.title)
+            activity_obj = activity_repo.get_or_create_activity(str(manager['number']), manager['name1'], page.title)
             if activity_obj.last_reported:
                 if activity_obj.last_reported < datetime.now() - timedelta(days=1):
                     activity_service.check_and_report_project_activity(page_user_ids_and_names, manager)
