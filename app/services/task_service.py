@@ -11,6 +11,8 @@ import time
 from sqlmodel import select
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
+from app.services import activity_repo
+from app.services import activity_service
 
 def get_all_tasks():
     with db_connection.get_session() as session:
@@ -84,6 +86,7 @@ def check_tasks_from_sheet(sheet_id: str):
             associated_course_link = page_content[0].get('Milestone', None)
             # print("associated_course_link:", associated_course_link, "with type:", type(associated_course_link))
             page_contacts_mails= []
+            page_user_ids_and_names = []
             # get the first contact as the manager
             manager = gsheet_service.get_specific_contact(contacts, page_content[0]['owner'])
             
@@ -140,6 +143,11 @@ def check_tasks_from_sheet(sheet_id: str):
                 #     if task_obj.ownerEmail not in page_contacts_mails:
                 #         page_contacts_mails.append(task_obj.ownerEmail)
                 #         print(f"point14.1: contact mail {task_obj.ownerEmail} added to list")
+
+                # add the contact's user id abd name to the list
+                if task_obj.ownerID and task_obj.ownerName:
+                    if (task_obj.ownerID, task_obj.ownerName) not in page_user_ids_and_names:
+                        page_user_ids_and_names.append((task_obj.ownerID, task_obj.ownerName))
 
                 # check if the task started
                 if created_at > datetime.now() + timedelta(minutes=10):
@@ -201,6 +209,12 @@ def check_tasks_from_sheet(sheet_id: str):
 
                 print("point15") # task processed
                 row_number += 1
+
+            # send activity report to manager
+            activity_obj = activity_repo.get_or_create_activity(manager['number'], manager['name1'], page.title)
+            if activity_obj.last_reported:
+                if activity_obj.last_reported < datetime.now() - timedelta(days=1):
+                    activity_service.check_and_report_project_activity(page_user_ids_and_names, manager)
 
             # check the contacts' mails
             if page_contacts_mails:
