@@ -44,4 +44,5 @@ def get_or_create_activity(managerID: str, managerName: str, projectName: str):
     if not activity:
         activity = activity_model.Activity(managerName=managerName, managerID=managerID, projectName=projectName)
         activity = create_activity(activity)
+        return None
     return activity
