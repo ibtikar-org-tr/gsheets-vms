@@ -22,7 +22,7 @@ async def check_all_sheets():
         print("point1: task_handlers.check_all_sheets")
         task_service.check_all_sheets()
     except Exception as e:
-        logger.error(f"Error parsing sheet ids: {e}")
+        logger.error(f"Error occurred: {e}")
         logger.error(f"Error occurred in file {e.__traceback__.tb_frame.f_code.co_filename}, function {e.__traceback__.tb_frame.f_code.co_name}, line {e.__traceback__.tb_lineno}")
         raise HTTPException(status_code=400, detail="Error parsing sheet ids")
     
